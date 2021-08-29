@@ -1,0 +1,28 @@
+version: "3"
+services:
+  web:
+    restart: always
+    build: .
+    container_name: "web_chat"
+    command: "python main.py"
+    working_dir: "/root/opt"
+    tty: true
+    volumes:
+      - ./opt:/root/opt
+      - ./bin/PythonStart:/root/PythonStart
+      - ./pip-lib:/usr/local/lib/python3.8/site-packages/
+    ports:
+      - 8080:8080
+  bot:
+    restart: always
+    build: .
+    container_name: "bot_chat"
+    command: "python main.py"
+    working_dir: "/root/opt"
+    tty: true
+    volumes:
+      - ./bot:/root/opt
+      - ./bin/PythonStart:/root/PythonStart
+      - ./pip-lib:/usr/local/lib/python3.8/site-packages/
+    ports:
+      - 8000:8000
