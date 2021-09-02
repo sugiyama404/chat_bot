@@ -72,11 +72,6 @@ using namespace ::c10::attr;
 namespace aten {
 using namespace ::c10::aten;
 }
-namespace cuda {
-#ifndef __HIP_PLATFORM_HCC__
-using namespace ::c10::cuda;
-#endif
-} // namespace cuda
 
 struct Function;
 struct MatchedSchema;
@@ -150,23 +145,6 @@ using ValueSet = std::unordered_set<const Value*>;
 
 struct OperatorSet;
 
-// This is a wrapper to allow invalidating the Python object
-// safely when the C++ object for a Node/Value/Block is deleted
-// like much of graph, it isn't safe for different threads to
-// access the same graph
-template <typename T>
-struct Wrap {
-  explicit Wrap(T* p) : elem(p), clear_cb(nullptr) {}
-  void clear() {
-    if (clear_cb) {
-      clear_cb(elem);
-    }
-    elem = nullptr;
-  }
-  T* elem;
-  void (*clear_cb)(void*);
-};
-
 struct Value {
   TH_DISALLOW_COPY_AND_ASSIGN(Value);
   Value(Node* node_, size_t offset_);
@@ -180,8 +158,6 @@ struct Value {
   use_list uses_;
   std::string unique_name_;
   TypePtr type_;
-  // a managing wrapper for Python to allow invalidation
-  std::shared_ptr<Wrap<Value>> wrap_;
 
  public:
   Value* setType(TypePtr type);
@@ -267,19 +243,6 @@ struct Value {
   TORCH_API void replaceAllUsesAfterNodeWith(const Node* node, Value* newValue);
 
   TORCH_API Value* copyMetadata(Value* from);
-
-  TORCH_API std::shared_ptr<Wrap<Value>> wrap() {
-    if (!wrap_) {
-      wrap_ = std::make_shared<Wrap<Value>>(this);
-    }
-    return wrap_;
-  }
-
-  virtual ~Value() {
-    if (wrap_) {
-      wrap_->clear();
-    }
-  }
 };
 
 struct TORCH_API Node {
@@ -309,8 +272,6 @@ struct TORCH_API Node {
   // change the schema. note: mutable because schema_ is effectively a cache
   mutable const Operator* op_;
   topo_position_t topo_position_ = 0;
-  // a managing wrapper for Python to allow invalidation
-  std::shared_ptr<Wrap<Node>> wrap_;
 
  protected:
   Node(Graph* graph_, NodeKind kind_); // defined after graph
@@ -323,15 +284,7 @@ struct TORCH_API Node {
   // null pointers next_in_graph[0] is next pointer next_in_graph[1] is prev
   // pointer using an array to allow the same iterator class for forward and
   // reverse node lists This list represents a topological sort
-  // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,cppcoreguidelines-non-private-member-variables-in-classes,modernize-avoid-c-arrays)
   Node* next_in_graph[2] = {nullptr, nullptr};
-
-  std::shared_ptr<Wrap<Node>> wrap() {
-    if (!wrap_) {
-      wrap_ = std::make_shared<Wrap<Node>>(this);
-    }
-    return wrap_;
-  }
 
   Node*& next() {
     return next_in_graph[kNextDirection];
@@ -438,10 +391,6 @@ struct TORCH_API Node {
 
   void replaceAllUsesWith(Node* n);
 
-  // replaces `this` with a new node with the same inputs and outputs
-  // but a new node symbol. does not destroy `this`
-  Node* replaceWithNewSymbol(Symbol new_symbol);
-
   // lots of things like chunk have a single input or single output, so we have
   // a helper to make accessing it easier
   Value* input() {
@@ -465,8 +414,6 @@ struct TORCH_API Node {
     return inputs_.at(i);
   }
 
-  bool hasNamedInput(const std::string& unqualName) const;
-  Value* namedInput(const std::string& unqualName) const;
   Value* namedInput(Symbol name) const;
 
   c10::optional<IValue> get(Symbol name) const;
@@ -491,7 +438,7 @@ struct TORCH_API Node {
   // instructions lowered by the interpreter and not run in the optimized graph
   bool notExecutedOp() const {
     return kind_ == prim::Constant || kind_ == prim::profile ||
-        kind_ == prim::profile_ivalue;
+        kind_ == prim::profile_optional;
   }
 
   // Graphs
@@ -735,11 +682,7 @@ struct TORCH_API Node {
       bool print_scopes = true,
       bool print_body = true) const;
 
-  virtual ~Node() {
-    if (wrap_) {
-      wrap_->clear();
-    }
-  }
+  virtual ~Node() = default;
 
   // Methods for accessing attributes
   Node* copyAttributes(const Node& rhs) {
@@ -803,9 +746,7 @@ struct TORCH_API Node {
   }
 
   CREATE_ACCESSOR(Float, f)
-  CREATE_ACCESSOR(Complex, c)
   CREATE_ACCESSOR(Floats, fs)
-  CREATE_ACCESSOR(ComplexVals, cs)
   CREATE_ACCESSOR(String, s)
   CREATE_ACCESSOR(Strings, ss)
   CREATE_ACCESSOR(Int, i)
@@ -867,7 +808,7 @@ struct TORCH_API Node {
     auto it = findAttr(name, true);
     auto* child = dynamic_cast<T*>(it->get());
     if (child == nullptr) {
-      throw IRAttributeError(name, true);
+      throw AttributeError(name, true);
     }
     return child->value();
   }
@@ -882,7 +823,7 @@ struct TORCH_API Node {
       return v->name == name;
     });
     if (required && it == values_.end()) {
-      throw IRAttributeError(name, false);
+      throw AttributeError(name, false);
     }
     AT_ASSERT(!required || it != values_.end());
     return it;
@@ -894,7 +835,7 @@ struct TORCH_API Node {
       return v->name == name;
     });
     if (required && it == values_.end()) {
-      throw IRAttributeError(name, false);
+      throw AttributeError(name, false);
     }
     AT_ASSERT(!required || it != values_.end());
     return it;
@@ -993,14 +934,14 @@ struct Block {
     return owning_node_;
   }
 
-  Value* addInput(const std::string& name = "") {
+  Value* addInput(std::string name = "") {
     Value* v = input_->addOutput();
-    v->setDebugName(name);
+    v->setDebugName(std::move(name));
     return v;
   }
-  Value* insertInput(size_t i, const std::string& name = "") {
+  Value* insertInput(size_t i, std::string name = "") {
     Value* v = input_->insertOutput(i);
-    v->setDebugName(name);
+    v->setDebugName(std::move(name));
     return v;
   }
   void eraseInput(size_t i) {
@@ -1044,19 +985,6 @@ struct Block {
   TORCH_API void cloneFrom(Block* src, std::function<Value*(Value*)> value_map);
   TORCH_API void remapTypes(const std::function<TypePtr(TypePtr)>& type_map);
 
-  TORCH_API std::shared_ptr<Wrap<Block>> wrap() {
-    if (!wrap_) {
-      wrap_ = std::make_shared<Wrap<Block>>(this);
-    }
-    return wrap_;
-  }
-
-  virtual ~Block() {
-    if (wrap_) {
-      wrap_->clear();
-    }
-  }
-
  private:
   void reIndexTopology();
 
@@ -1074,8 +1002,6 @@ struct Block {
   Node* const input_;
   Node* const
       owning_node_; // either the node that has this block or nullptr for root
-  // a managing wrapper for Python to allow invalidation
-  std::shared_ptr<Wrap<Block>> wrap_;
 };
 
 struct Graph {
@@ -1095,10 +1021,6 @@ struct Graph {
   size_t next_unique_;
 
   std::unordered_map<std::string, Value*> unique_names_;
-  // name_base_suffix tracks largest suffix currently used by all names sharing
-  // same name_base. Key of this map is name_base, value is largest suffix
-  // numeric value.
-  std::unordered_map<std::string, size_t> name_base_suffix_;
 
   ScopePtr current_scope_;
 
@@ -1163,11 +1085,11 @@ struct Graph {
     current_scope_ = std::move(scope);
   }
 
-  Value* addInput(const std::string& name = "") {
-    return block_->addInput(name);
+  Value* addInput(std::string name = "") {
+    return block_->addInput(std::move(name));
   }
-  Value* insertInput(size_t i, const std::string& name = "") {
-    return block_->insertInput(i, name);
+  Value* insertInput(size_t i, std::string name = "") {
+    return block_->insertInput(i, std::move(name));
   }
   void eraseInput(size_t i) {
     block_->eraseInput(i);
@@ -1198,11 +1120,7 @@ struct Graph {
       Value* tup,
       Value* idx,
       const TypePtr& output_type);
-  TORCH_API Node* createTupleSlice(
-      Value* tup,
-      int64_t beg,
-      int64_t step_size,
-      int64_t num_values);
+  TORCH_API Node* createTupleSlice(Value* tup, int64_t beg, int64_t end);
   TORCH_API Node* createEnumName(Value* e);
   TORCH_API Node* createEnumValue(Value* e);
   TORCH_API Node* createList(
@@ -1247,7 +1165,7 @@ struct Graph {
       const std::string& cconv,
       pyobj_list&& scalar_args);
   // clone n, making a new node in _this_ graph.
-  // use value_map to translate inputs of n to inputs of the cloned node
+  // use node_map to translate inputs of n to inputs of the cloned node
   // if copy_blocks is false, it will not recursively clone the nested blocks
   // this node contains.
   TORCH_API Node* createClone(
@@ -1343,7 +1261,7 @@ struct Graph {
 /** \brief An utility class for setting temporary insertion points.
  *
  * When an object of this class is created, it stores the current insertion
- * point, sets the new one, and restores the original insertion point when the
+ * point, sets the new one, and restores the original insertion point  when the
  * object is destroyed.
  */
 struct WithInsertPoint {
@@ -1406,9 +1324,9 @@ inline const Graph* Value::owningGraph() const {
 
 /************* All nodes not required to be defined before Graph **************/
 struct ProfileOp : public Node {
-  static const Symbol Kind;
+  static constexpr Symbol Kind = ::c10::prim::profile;
   ProfileOp(Graph* graph, std::function<void(std::vector<IValue>&)> callback)
-      : Node(graph, ::c10::prim::profile), callback_(std::move(callback)) {}
+      : Node(graph, ::c10::prim::profile), callback_(callback) {}
 
   void cloneFrom(Node* other_) override;
   Node* allocNewInstance(Graph* g) override;
@@ -1418,20 +1336,19 @@ struct ProfileOp : public Node {
   }
 
   void setCallback(std::function<void(std::vector<IValue>&)> callback) {
-    callback_ = std::move(callback);
+    callback_ = callback;
   }
 
  private:
   std::function<void(std::vector<IValue>&)> callback_;
 };
 
-struct TORCH_API ProfileIValueOp : public Node {
-  static const Symbol Kind;
-  ProfileIValueOp(
+struct TORCH_API ProfileOptionalOp : public Node {
+  static constexpr Symbol Kind = ::c10::prim::profile_optional;
+  ProfileOptionalOp(
       Graph* graph,
       std::function<void(std::vector<IValue>&)> callback)
-      : Node(graph, ::c10::prim::profile_ivalue),
-        callback_(std::move(callback)) {}
+      : Node(graph, ::c10::prim::profile_optional), callback_(callback) {}
 
   void cloneFrom(Node* other_) override;
   Node* allocNewInstance(Graph* g) override;

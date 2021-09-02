@@ -4,6 +4,7 @@ import torch
 from torch import Tensor
 from torch._ops import ops
 
+
 class FloatFunctional(torch.nn.Module):
     r"""State collector class for float operations.
 
@@ -39,90 +40,48 @@ class FloatFunctional(torch.nn.Module):
                            "'forward'. Please use the underlying operation")
 
     r"""Operation equivalent to ``torch.add(Tensor, Tensor)``"""
-    def add(self, x: Tensor, y: Tensor) -> Tensor:
+    def add(self, x, y):
+        # type: (Tensor, Tensor) -> Tensor
         r = torch.add(x, y)
         r = self.activation_post_process(r)
         return r
 
     r"""Operation equivalent to ``torch.add(Tensor, float)``"""
-    def add_scalar(self, x: Tensor, y: float) -> Tensor:
+    def add_scalar(self, x, y):
+        # type: (Tensor, float) -> Tensor
         r = torch.add(x, y)
-        # Note: this operation is not observed because the observation is not
-        # needed for the quantized op.
+        r = self.activation_post_process(r)
         return r
 
     r"""Operation equivalent to ``torch.mul(Tensor, Tensor)``"""
-    def mul(self, x: Tensor, y: Tensor) -> Tensor:
+    def mul(self, x, y):
+        # type: (Tensor, Tensor) -> Tensor
         r = torch.mul(x, y)
         r = self.activation_post_process(r)
         return r
 
     r"""Operation equivalent to ``torch.mul(Tensor, float)``"""
-    def mul_scalar(self, x: Tensor, y: float) -> Tensor:
+    def mul_scalar(self, x, y):
+        # type: (Tensor, float) -> Tensor
         r = torch.mul(x, y)
-        # Note: this operation is not observed because the observation is not
-        # needed for the quantized op.
+        r = self.activation_post_process(r)
         return r
 
     r"""Operation equivalent to ``torch.cat``"""
-    def cat(self, x: List[Tensor], dim: int = 0) -> Tensor:
+    def cat(self, x, dim=0):
+        # type: (List[Tensor], int) -> Tensor
         r = torch.cat(x, dim=dim)
         r = self.activation_post_process(r)
         return r
 
     r"""Operation equivalent to ``relu(torch.add(x,y))``"""
-    def add_relu(self, x: Tensor, y: Tensor) -> Tensor:
+    def add_relu(self, x, y):
+        # type: (Tensor, Tensor) -> Tensor
         r = torch.add(x, y)
         r = torch.nn.functional.relu(r)
         r = self.activation_post_process(r)
         return r
 
-class FXFloatFunctional(torch.nn.Module):
-    r""" module to replace FloatFunctional module before FX graph mode quantization,
-    since activation_post_process will be inserted in top level module directly
-
-    Valid operation names:
-        - add
-        - cat
-        - mul
-        - add_relu
-        - add_scalar
-        - mul_scalar
-    """
-    def forward(self, x):
-        raise RuntimeError("FloatFunctional is not intended to use the " +
-                           "'forward'. Please use the underlying operation")
-
-    r"""Operation equivalent to ``torch.add(Tensor, Tensor)``"""
-    def add(self, x: Tensor, y: Tensor) -> Tensor:
-        r = torch.add(x, y)
-        return r
-
-    r"""Operation equivalent to ``torch.add(Tensor, float)``"""
-    def add_scalar(self, x: Tensor, y: float) -> Tensor:
-        r = torch.add(x, y)
-        return r
-
-    r"""Operation equivalent to ``torch.mul(Tensor, Tensor)``"""
-    def mul(self, x: Tensor, y: Tensor) -> Tensor:
-        r = torch.mul(x, y)
-        return r
-
-    r"""Operation equivalent to ``torch.mul(Tensor, float)``"""
-    def mul_scalar(self, x: Tensor, y: float) -> Tensor:
-        r = torch.mul(x, y)
-        return r
-
-    r"""Operation equivalent to ``torch.cat``"""
-    def cat(self, x: List[Tensor], dim: int = 0) -> Tensor:
-        r = torch.cat(x, dim=dim)
-        return r
-
-    r"""Operation equivalent to ``relu(torch.add(x,y))``"""
-    def add_relu(self, x: Tensor, y: Tensor) -> Tensor:
-        r = torch.add(x, y)
-        r = torch.nn.functional.relu(r)
-        return r
 
 class QFunctional(torch.nn.Module):
     r"""Wrapper class for quantized operations.
@@ -182,39 +141,43 @@ class QFunctional(torch.nn.Module):
                            "'forward'. Please use the underlying operation")
 
     r"""Operation equivalent to ``torch.ops.quantized.add``"""
-    def add(self, x: Tensor, y: Tensor) -> Tensor:
+    def add(self, x, y):
+        # type: (Tensor, Tensor) -> Tensor
         r = ops.quantized.add(x, y, scale=self.scale, zero_point=self.zero_point)
         r = self.activation_post_process(r)
         return r
 
     r"""Operation equivalent to ``torch.ops.quantized.add(Tensor, float)``"""
-    def add_scalar(self, x: Tensor, y: float) -> Tensor:
+    def add_scalar(self, x, y):
+        # type: (Tensor, float) -> Tensor
         r = ops.quantized.add_scalar(x, y)
-        # Note: this operation is not observed because the observation is not
-        # needed for the quantized op.
+        r = self.activation_post_process(r)
         return r
 
     r"""Operation equivalent to ``torch.ops.quantized.mul(Tensor, Tensor)``"""
-    def mul(self, x: Tensor, y: Tensor) -> Tensor:
+    def mul(self, x, y):
+        # type: (Tensor, Tensor) -> Tensor
         r = ops.quantized.mul(x, y, scale=self.scale, zero_point=self.zero_point)
         r = self.activation_post_process(r)
         return r
 
     r"""Operation equivalent to ``torch.ops.quantized.mul(Tensor, float)``"""
-    def mul_scalar(self, x: Tensor, y: float) -> Tensor:
+    def mul_scalar(self, x, y):
+        # type: (Tensor, float) -> Tensor
         r = ops.quantized.mul_scalar(x, y)
-        # Note: this operation is not observed because the observation is not
-        # needed for the quantized op.
+        r = self.activation_post_process(r)
         return r
 
     r"""Operation equivalent to ``torch.ops.quantized.cat``"""
-    def cat(self, x: List[Tensor], dim: int = 0) -> Tensor:
+    def cat(self, x, dim=0):
+        # type: (List[Tensor], int) -> Tensor
         r = ops.quantized.cat(x, scale=self.scale, zero_point=self.zero_point, dim=dim)
         r = self.activation_post_process(r)
         return r
 
     r"""Operation equivalent to ``torch.ops.quantized.add_relu``"""
-    def add_relu(self, x: Tensor, y: Tensor) -> Tensor:
+    def add_relu(self, x, y):
+        # type: (Tensor, Tensor) -> Tensor
         r = ops.quantized.add_relu(x, y, scale=self.scale, zero_point=self.zero_point)
         r = self.activation_post_process(r)
         return r

@@ -6,7 +6,7 @@
 namespace c10 {
 
 /**
- * quint8 is for unsigned 8 bit quantized Tensors
+ * qint8 is for signed 8 bit quantized Tensors
  */
 struct alignas(1) quint8 {
   using underlying = uint8_t;

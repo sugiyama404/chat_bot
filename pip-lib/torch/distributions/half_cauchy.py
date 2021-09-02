@@ -29,7 +29,7 @@ class HalfCauchy(TransformedDistribution):
     has_rsample = True
 
     def __init__(self, scale, validate_args=None):
-        base_dist = Cauchy(0, scale, validate_args=False)
+        base_dist = Cauchy(0, scale)
         super(HalfCauchy, self).__init__(base_dist, AbsTransform(),
                                          validate_args=validate_args)
 
@@ -43,15 +43,13 @@ class HalfCauchy(TransformedDistribution):
 
     @property
     def mean(self):
-        return torch.full(self._extended_shape(), math.inf, dtype=self.scale.dtype, device=self.scale.device)
+        return self.base_dist.mean
 
     @property
     def variance(self):
         return self.base_dist.variance
 
     def log_prob(self, value):
-        if self._validate_args:
-            self._validate_sample(value)
         value = torch.as_tensor(value, dtype=self.base_dist.scale.dtype,
                                 device=self.base_dist.scale.device)
         log_prob = self.base_dist.log_prob(value) + math.log(2)
@@ -59,8 +57,6 @@ class HalfCauchy(TransformedDistribution):
         return log_prob
 
     def cdf(self, value):
-        if self._validate_args:
-            self._validate_sample(value)
         return 2 * self.base_dist.cdf(value) - 1
 
     def icdf(self, prob):

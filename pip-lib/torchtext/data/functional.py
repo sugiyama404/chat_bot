@@ -2,12 +2,11 @@ import re
 import io
 import torch
 
+
 __all__ = [
     "generate_sp_model", "load_sp_model",
     "sentencepiece_numericalizer", "sentencepiece_tokenizer",
-    "numericalize_tokens_from_iterator",
-    "filter_wikipedia_xml",
-    "to_map_style_dataset",
+    "numericalize_tokens_from_iterator"
 ]
 
 
@@ -22,7 +21,7 @@ def generate_sp_model(filename, vocab_size=20000,
                       model_prefix='m_user'):
     r"""Train a SentencePiece tokenizer.
 
-    Args:
+    Arguments:
         filename: the data file for training SentencePiece model.
         vocab_size: the size of vocabulary (Default: 20,000).
         model_type: the type of SentencePiece model, including unigram,
@@ -43,7 +42,7 @@ def generate_sp_model(filename, vocab_size=20000,
 def load_sp_model(spm):
     r"""Load a  sentencepiece model for file.
 
-    Args:
+    Arguments:
         spm: the file path or a file object saving the sentencepiece model.
 
     Outputs:
@@ -71,7 +70,7 @@ def sentencepiece_numericalizer(sp_model):
     r"""A sentencepiece model to numericalize a text sentence into
        a generator over the ids.
 
-    Args:
+    Arguments:
         sp_model: a SentencePiece model.
 
     Outputs:
@@ -97,7 +96,7 @@ def sentencepiece_tokenizer(sp_model):
     r"""A sentencepiece model to tokenize a text sentence into
        a generator over the tokens.
 
-    Args:
+    Arguments:
         sp_model: a SentencePiece model.
 
     Outputs:
@@ -158,7 +157,7 @@ def simple_space_split(iterator):
 def numericalize_tokens_from_iterator(vocab, iterator, removed_tokens=None):
     r"""Yield a list of ids from an token iterator with a vocab.
 
-    Args:
+    Arguments:
         vocab: the vocabulary convert token into id.
         iterator: the iterator yield a list of tokens.
         removed_tokens: removed tokens from output dataset (Default: None)
@@ -181,104 +180,3 @@ def numericalize_tokens_from_iterator(vocab, iterator, removed_tokens=None):
         else:
             yield iter(map(lambda x: vocab[x],
                        filter(lambda x: x not in removed_tokens, tokens)))
-
-
-_patterns = [(r'<.*>', ''),
-             (r'&amp;', '&'),
-             (r'&lt;', '<'),
-             (r'&gt;', '>'),
-             (r'<ref[^<]*<\/ref>', ''),
-             (r'<[^>]*>', ''),
-             (r'\[http:[^] ]*', '['),
-             (r'\|thumb', ''),
-             (r'\|left', ''),
-             (r'\|right', ''),
-             (r'\|\d+px', ''),
-             (r'\[\[image:[^\[\]]*\|', ''),
-             (r'\[\[category:([^|\]]*)[^]]*\]\]', '[[$1]]'),
-             (r'\[\[[a-z\-]*:[^\]]*\]\]', ''),
-             (r'\[\[[^\|\]]*\|', '[['),
-             (r'\{\{[^\}]*\}\}', ''),
-             (r'\{[^\}]*\}', ''),
-             (r'\[', ''),
-             (r'\]', ''),
-             (r'&[^;]*;', ' '),
-             (r'A', 'a'), (r'B', 'b'), (r'C', 'c'),
-             (r'D', 'd'), (r'E', 'e'), (r'F', 'f'),
-             (r'G', 'g'), (r'H', 'h'), (r'I', 'i'),
-             (r'J', 'j'), (r'K', 'k'), (r'L', 'l'),
-             (r'M', 'm'), (r'N', 'n'), (r'O', 'o'),
-             (r'P', 'p'), (r'Q', 'q'), (r'R', 'r'),
-             (r'S', 's'), (r'T', 't'), (r'U', 'u'),
-             (r'V', 'v'), (r'W', 'w'), (r'X', 'x'),
-             (r'Y', 'y'), (r'Z', 'z'),
-             (r'0', ' zero '), (r'1', ' one '), (r'2', ' two '),
-             (r'3', ' three '), (r'4', ' four '), (r'5', ' five '),
-             (r'6', ' six '), (r'7', ' seven '), (r'8', ' eight '),
-             (r'9', ' nine '),
-             (r'[^a-z\n]+', ' '),
-             (r'\n ', ''),
-             (r'\s+', ' '),
-             (r'\n\s*\n', r'\n')
-             ]
-
-
-def filter_wikipedia_xml(text_iterator):
-    r"""Filter wikipedia xml lines according to https://github.com/facebookresearch/fastText/blob/master/wikifil.pl
-
-    args:
-        text_iterator: An iterator type object that yields strings. Examples include string list, text io, generators etc.
-
-    Examples:
-        >>> from torchtext.data.functional import filter_wikipedia_xml
-        >>> from torchtext.datasets import EnWik9
-        >>> data_iter = EnWik9(split='train')
-        >>> filter_data_iter = filter_wikipedia_xml(data_iter)
-        >>> file_name = '.data/EnWik9/enwik9'
-        >>> filter_data_iter = filter_wikipedia_xml(open(file_name,'r'))
-    """
-
-    try:
-        iter(text_iterator)
-    except:
-        raise TypeError("Input {} must support iterator semantics".format(text_iterator))
-
-    norm_transform = custom_replace(_patterns)
-    for line in text_iterator:
-        if '#redirect' in line or '#REDIRECT' in line:
-            continue
-        line = list(norm_transform([line]))[0].strip()
-        if line:
-            yield line
-
-
-def to_map_style_dataset(iter_data):
-    r"""Convert iterable-style dataset to map-style dataset.
-
-    args:
-        iter_data: An iterator type object. Examples include Iterable datasets, string list, text io, generators etc.
-
-
-    Examples:
-        >>> from torchtext.datasets import IMDB
-        >>> from torchtext.data import to_map_style_dataset
-        >>> train_iter = IMDB(split='train')
-        >>> train_dataset = to_map_style_dataset(train_iter)
-        >>> file_name = '.data/EnWik9/enwik9'
-        >>> data_iter = to_map_style_dataset(open(file_name,'r'))
-    """
-
-    # Inner class to convert iterable-style to map-style dataset
-    class _MapStyleDataset(torch.utils.data.Dataset):
-
-        def __init__(self, iter_data):
-            # TODO Avoid list issue #1296
-            self._data = list(iter_data)
-
-        def __len__(self):
-            return len(self._data)
-
-        def __getitem__(self, idx):
-            return self._data[idx]
-
-    return _MapStyleDataset(iter_data)

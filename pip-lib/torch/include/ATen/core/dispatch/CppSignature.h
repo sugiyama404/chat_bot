@@ -1,7 +1,6 @@
 #pragma once
 
 #include <typeindex>
-#include <c10/core/DispatchKeySet.h>
 #include <c10/macros/Macros.h>
 #include <c10/util/Metaprogramming.h>
 #include <c10/util/Type.h>
@@ -11,7 +10,7 @@ namespace impl {
 
 // A CppSignature object holds RTTI information about a C++ function signature at runtime
 // and can compare them or get a debug-printable name.
-class TORCH_API CppSignature final {
+class CAFFE2_API CppSignature final {
 public:
     CppSignature(const CppSignature&) = default;
     CppSignature(CppSignature&&) noexcept = default;
@@ -21,11 +20,7 @@ public:
     template<class FuncType>
     static CppSignature make() {
         // Normalize functors, lambdas, function pointers, etc. into the plain function type
-        // The first argument of the schema might be of type DispatchKeySet, in which case we remove it.
-        // We do this to guarantee that all CppSignature's for an operator will match, even if they're registered
-        // with different calling conventions.
-        // See Note [Plumbing Keys Through The Dispatcher]
-        using decayed_function_type = typename c10::remove_DispatchKeySet_arg_from_func<std::decay_t<FuncType>>::func_type;
+        using decayed_function_type = typename guts::infer_function_traits_t<std::decay_t<FuncType>>::func_type;
 
         return CppSignature(std::type_index(typeid(decayed_function_type)));
     }

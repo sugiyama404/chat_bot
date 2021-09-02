@@ -9,7 +9,7 @@ class SparseAdam(Optimizer):
     In this variant, only moments that show up in the gradient get updated, and
     only those portions of the gradient get applied to the parameters.
 
-    Args:
+    Arguments:
         params (iterable): iterable of parameters to optimize or dicts defining
             parameter groups
         lr (float, optional): learning rate (default: 1e-3)
@@ -32,8 +32,6 @@ class SparseAdam(Optimizer):
         if not 0.0 <= betas[1] < 1.0:
             raise ValueError("Invalid beta parameter at index 1: {}".format(betas[1]))
 
-        params = list(params)
-
         sparse_params = []
         for index, param in enumerate(params):
             if isinstance(param, dict):
@@ -54,7 +52,7 @@ class SparseAdam(Optimizer):
     def step(self, closure=None):
         """Performs a single optimization step.
 
-        Args:
+        Arguments:
             closure (callable, optional): A closure that reevaluates the model
                 and returns the loss.
         """

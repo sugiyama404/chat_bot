@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='caffe2',
   syntax='proto2',
   serialized_options=None,
-  serialized_pb=b'\n\x19\x63\x61\x66\x66\x65\x32/proto/caffe2.proto\x12\x06\x63\x61\x66\x66\x65\x32\"\xa3\x05\n\x0bTensorProto\x12\x0c\n\x04\x64ims\x18\x01 \x03(\x03\x12\x36\n\tdata_type\x18\x02 \x01(\x0e\x32\x1c.caffe2.TensorProto.DataType:\x05\x46LOAT\x12\x16\n\x0b\x64\x61ta_format\x18\x0f \x01(\r:\x01\x30\x12\x16\n\nfloat_data\x18\x03 \x03(\x02\x42\x02\x10\x01\x12\x16\n\nint32_data\x18\x04 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tbyte_data\x18\x05 \x01(\x0c\x12\x13\n\x0bstring_data\x18\x06 \x03(\x0c\x12\x17\n\x0b\x64ouble_data\x18\t \x03(\x01\x42\x02\x10\x01\x12\x16\n\nint64_data\x18\n \x03(\x03\x42\x02\x10\x01\x12\x10\n\x08raw_data\x18\r \x01(\x0c\x12\x0c\n\x04name\x18\x07 \x01(\t\x12+\n\rdevice_detail\x18\x08 \x01(\x0b\x32\x14.caffe2.DeviceOption\x12,\n\x07segment\x18\x0b \x01(\x0b\x32\x1b.caffe2.TensorProto.Segment\x1a%\n\x07Segment\x12\r\n\x05\x62\x65gin\x18\x01 \x02(\x03\x12\x0b\n\x03\x65nd\x18\x02 \x02(\x03\"\xcf\x01\n\x08\x44\x61taType\x12\r\n\tUNDEFINED\x10\x00\x12\t\n\x05\x46LOAT\x10\x01\x12\t\n\x05INT32\x10\x02\x12\x08\n\x04\x42YTE\x10\x03\x12\n\n\x06STRING\x10\x04\x12\x08\n\x04\x42OOL\x10\x05\x12\t\n\x05UINT8\x10\x06\x12\x08\n\x04INT8\x10\x07\x12\n\n\x06UINT16\x10\x08\x12\t\n\x05INT16\x10\t\x12\t\n\x05INT64\x10\n\x12\x0b\n\x07\x46LOAT16\x10\x0c\x12\n\n\x06\x44OUBLE\x10\r\x12\x17\n\x13ZERO_COLLISION_HASH\x10\x0e\x12\x15\n\x11REBATCHING_BUFFER\x10\x0f\"9\n\x13SerializationFormat\x12\x10\n\x0c\x46MT_PROTOBUF\x10\x00\x12\x10\n\x0c\x46MT_BFLOAT16\x10\x01\"\x83\x02\n\x0cQTensorProto\x12\x0c\n\x04\x64ims\x18\x01 \x03(\x03\x12\x11\n\tprecision\x18\x02 \x02(\x05\x12\r\n\x05scale\x18\x03 \x02(\x01\x12\x0c\n\x04\x62ias\x18\x04 \x02(\x01\x12\x11\n\tis_signed\x18\x05 \x02(\x08\x12\x10\n\x04\x64\x61ta\x18\x06 \x03(\x05\x42\x02\x10\x01\x12\x0c\n\x04name\x18\x07 \x01(\t\x12\x36\n\tdata_type\x18\x08 \x01(\x0e\x32\x1c.caffe2.TensorProto.DataType:\x05INT32\x12\x0e\n\x06scales\x18\t \x03(\x01\x12\x0e\n\x06\x62iases\x18\n \x03(\x01\x12\x0c\n\x04\x61xis\x18\x0b \x01(\x05\x12\x1c\n\ris_multiparam\x18\x0c \x01(\x08:\x05\x66\x61lse\"3\n\x0cTensorProtos\x12#\n\x06protos\x18\x01 \x03(\x0b\x32\x13.caffe2.TensorProto\"\x95\x01\n\x0bTensorShape\x12\x0c\n\x04\x64ims\x18\x01 \x03(\x03\x12\x36\n\tdata_type\x18\x02 \x01(\x0e\x32\x1c.caffe2.TensorProto.DataType:\x05\x46LOAT\x12\x14\n\x0cunknown_dims\x18\x03 \x03(\x05\x12\x1c\n\runknown_shape\x18\x04 \x01(\x08:\x05\x66\x61lse\x12\x0c\n\x04name\x18\x05 \x01(\t\"3\n\x0cTensorShapes\x12#\n\x06shapes\x18\x01 \x03(\x0b\x32\x13.caffe2.TensorShape\"\xa8\x02\n\x10TensorBoundShape\x12\"\n\x05shape\x18\x01 \x01(\x0b\x32\x13.caffe2.TensorShape\x12\x32\n\x08\x64im_type\x18\x02 \x03(\x0e\x32 .caffe2.TensorBoundShape.DimType\x12\x0c\n\x04name\x18\x03 \x01(\t\x12\x16\n\x0eshape_is_final\x18\x04 \x01(\x08\"\x95\x01\n\x07\x44imType\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0c\n\x08\x43ONSTANT\x10\x01\x12\t\n\x05\x42\x41TCH\x10\x02\x12\x18\n\x14\x42\x41TCH_OF_FEATURE_MAX\x10\x03\x12 \n\x1c\x42\x41TCH_OF_FEATURE_MAX_DEFAULT\x10\x04\x12\x0f\n\x0b\x46\x45\x41TURE_MAX\x10\x05\x12\x17\n\x13\x46\x45\x41TURE_MAX_DEFAULT\x10\x06\"n\n\x11TensorBoundShapes\x12(\n\x06shapes\x18\x01 \x03(\x0b\x32\x18.caffe2.TensorBoundShape\x12\x16\n\x0emax_batch_size\x18\x02 \x01(\x03\x12\x17\n\x0fmax_feature_len\x18\x03 \x01(\x03\"\x8d\x01\n\tAOTConfig\x12\x16\n\x0emax_batch_size\x18\x01 \x02(\x03\x12\x14\n\x0cmax_seq_size\x18\x02 \x02(\x03\x12\x1a\n\x12in_batch_broadcast\x18\x03 \x02(\x08\x12\x1d\n\x15onnxifi_blacklist_ops\x18\x04 \x01(\t\x12\x17\n\x0fonnxifi_min_ops\x18\x05 \x01(\x05\"\x8f\x02\n\x08\x41rgument\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\t\n\x01\x66\x18\x02 \x01(\x02\x12\t\n\x01i\x18\x03 \x01(\x03\x12\t\n\x01s\x18\x04 \x01(\x0c\x12\x1e\n\x01t\x18\n \x01(\x0b\x32\x13.caffe2.TensorProto\x12\x19\n\x01n\x18\x08 \x01(\x0b\x32\x0e.caffe2.NetDef\x12\x0e\n\x06\x66loats\x18\x05 \x03(\x02\x12\x0c\n\x04ints\x18\x06 \x03(\x03\x12\x0f\n\x07strings\x18\x07 \x03(\x0c\x12$\n\x07tensors\x18\x0b \x03(\x0b\x32\x13.caffe2.TensorProto\x12\x1c\n\x04nets\x18\t \x03(\x0b\x32\x0e.caffe2.NetDef\x12&\n\x08qtensors\x18\x0c \x03(\x0b\x32\x14.caffe2.QTensorProto\"\x8b\x01\n\x0c\x44\x65viceOption\x12\x16\n\x0b\x64\x65vice_type\x18\x01 \x01(\x05:\x01\x30\x12\x11\n\tdevice_id\x18\x02 \x01(\x05\x12\x13\n\x0brandom_seed\x18\x03 \x01(\r\x12\x11\n\tnode_name\x18\x04 \x01(\t\x12\x14\n\x0cnuma_node_id\x18\x05 \x01(\x05\x12\x12\n\nextra_info\x18\x06 \x03(\t\"\x92\x02\n\x0bOperatorDef\x12\r\n\x05input\x18\x01 \x03(\t\x12\x0e\n\x06output\x18\x02 \x03(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\x12\x0c\n\x04type\x18\x04 \x01(\t\x12\x1d\n\x03\x61rg\x18\x05 \x03(\x0b\x32\x10.caffe2.Argument\x12+\n\rdevice_option\x18\x06 \x01(\x0b\x32\x14.caffe2.DeviceOption\x12\x0e\n\x06\x65ngine\x18\x07 \x01(\t\x12\x15\n\rcontrol_input\x18\x08 \x03(\t\x12\x1d\n\x0eis_gradient_op\x18\t \x01(\x08:\x05\x66\x61lse\x12\x12\n\ndebug_info\x18\n \x01(\t\x12\x0e\n\x06\x64omain\x18\x0b \x01(\t\x12\x12\n\nop_version\x18\x0c \x01(\x03\")\n\rMapFieldEntry\x12\x0b\n\x03key\x18\x01 \x02(\t\x12\x0b\n\x03val\x18\x02 \x02(\t\"M\n\x0e\x42\x61\x63kendOptions\x12\x14\n\x0c\x62\x61\x63kend_name\x18\x01 \x02(\t\x12%\n\x06option\x18\x02 \x03(\x0b\x32\x15.caffe2.MapFieldEntry\"u\n\rPartitionInfo\x12\x0c\n\x04name\x18\x01 \x02(\t\x12\x11\n\tdevice_id\x18\x02 \x03(\x05\x12\x12\n\nextra_info\x18\x03 \x01(\t\x12/\n\x0f\x62\x61\x63kend_options\x18\x04 \x03(\x0b\x32\x16.caffe2.BackendOptions\"\x86\x02\n\x06NetDef\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x1f\n\x02op\x18\x02 \x03(\x0b\x32\x13.caffe2.OperatorDef\x12\x0c\n\x04type\x18\x03 \x01(\t\x12\x13\n\x0bnum_workers\x18\x04 \x01(\x05\x12+\n\rdevice_option\x18\x05 \x01(\x0b\x32\x14.caffe2.DeviceOption\x12\x1d\n\x03\x61rg\x18\x06 \x03(\x0b\x32\x10.caffe2.Argument\x12\x16\n\x0e\x65xternal_input\x18\x07 \x03(\t\x12\x17\n\x0f\x65xternal_output\x18\x08 \x03(\t\x12-\n\x0epartition_info\x18\t \x03(\x0b\x32\x15.caffe2.PartitionInfo\"\xcf\x02\n\rExecutionStep\x12\x0c\n\x04name\x18\x01 \x01(\t\x12&\n\x07substep\x18\x02 \x03(\x0b\x32\x15.caffe2.ExecutionStep\x12\x0f\n\x07network\x18\x03 \x03(\t\x12\x10\n\x08num_iter\x18\x04 \x01(\x03\x12\x1c\n\x10\x63riteria_network\x18\x05 \x01(\tB\x02\x18\x01\x12\x12\n\nreport_net\x18\x07 \x01(\t\x12\x17\n\x0freport_interval\x18\x08 \x01(\x05\x12\x14\n\x0crun_every_ms\x18\x0b \x01(\x03\x12\x1b\n\x13\x63oncurrent_substeps\x18\x06 \x01(\x08\x12\x18\n\x10should_stop_blob\x18\t \x01(\t\x12\x11\n\tonly_once\x18\n \x01(\x08\x12\x18\n\x10\x63reate_workspace\x18\x0c \x01(\x08\x12 \n\x18num_concurrent_instances\x18\r \x01(\x05\"g\n\x07PlanDef\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x1f\n\x07network\x18\x02 \x03(\x0b\x32\x0e.caffe2.NetDef\x12-\n\x0e\x65xecution_step\x18\x03 \x03(\x0b\x32\x15.caffe2.ExecutionStep\"\xba\x01\n\tBlobProto\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04type\x18\x02 \x01(\t\x12#\n\x06tensor\x18\x03 \x01(\x0b\x32\x13.caffe2.TensorProto\x12\x0f\n\x07\x63ontent\x18\x04 \x01(\x0c\x12%\n\x07qtensor\x18\x05 \x01(\x0b\x32\x14.caffe2.QTensorProto\x12\x1a\n\x12\x63ontent_num_chunks\x18\x06 \x01(\x05\x12\x18\n\x10\x63ontent_chunk_id\x18\x07 \x01(\x05\"K\n\rDBReaderProto\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0e\n\x06source\x18\x02 \x01(\t\x12\x0f\n\x07\x64\x62_type\x18\x03 \x01(\t\x12\x0b\n\x03key\x18\x04 \x01(\t\"\xd5\x01\n\x18\x42lobSerializationOptions\x12\x17\n\x0f\x62lob_name_regex\x18\x01 \x01(\t\x12\x12\n\nchunk_size\x18\x02 \x01(\x03\x12\x42\n\x0c\x66loat_format\x18\x03 \x01(\x0e\x32,.caffe2.BlobSerializationOptions.FloatFormat\"H\n\x0b\x46loatFormat\x12\x11\n\rFLOAT_DEFAULT\x10\x00\x12\x12\n\x0e\x46LOAT_PROTOBUF\x10\x01\x12\x12\n\x0e\x46LOAT_BFLOAT16\x10\x02\"I\n\x14SerializationOptions\x12\x31\n\x07options\x18\x01 \x03(\x0b\x32 .caffe2.BlobSerializationOptions*\xee\x01\n\x0f\x44\x65viceTypeProto\x12\r\n\tPROTO_CPU\x10\x00\x12\x0e\n\nPROTO_CUDA\x10\x01\x12\x10\n\x0cPROTO_MKLDNN\x10\x02\x12\x10\n\x0cPROTO_OPENGL\x10\x03\x12\x10\n\x0cPROTO_OPENCL\x10\x04\x12\x0f\n\x0bPROTO_IDEEP\x10\x05\x12\r\n\tPROTO_HIP\x10\x06\x12\x0e\n\nPROTO_FPGA\x10\x07\x12\x0f\n\x0bPROTO_MSNPU\x10\x08\x12\r\n\tPROTO_XLA\x10\t\x12\r\n\tPROTO_MLC\x10\n\x12\'\n#PROTO_COMPILE_TIME_MAX_DEVICE_TYPES\x10\x0b'
+  serialized_pb=b'\n\x19\x63\x61\x66\x66\x65\x32/proto/caffe2.proto\x12\x06\x63\x61\x66\x66\x65\x32\"\xe1\x01\n\x11\x45xternalDataProto\x12K\n\x0bsource_type\x18\x01 \x01(\x0e\x32$.caffe2.ExternalDataProto.SourceType:\x10INLINE_CONTAINER\x12\x11\n\trecord_id\x18\x02 \x01(\t\x12\x13\n\x0brecord_size\x18\x05 \x01(\x04\x12\x11\n\x06offset\x18\x03 \x01(\x03:\x01\x30\x12\x0f\n\x07strides\x18\x04 \x03(\x03\"3\n\nSourceType\x12\x14\n\x10INLINE_CONTAINER\x10\x00\x12\x0f\n\x0bSIMPLE_FILE\x10\x01\"\xea\x05\n\x0bTensorProto\x12\x0c\n\x04\x64ims\x18\x01 \x03(\x03\x12\x36\n\tdata_type\x18\x02 \x01(\x0e\x32\x1c.caffe2.TensorProto.DataType:\x05\x46LOAT\x12<\n\x0cstorage_type\x18\x0c \x01(\x0e\x32\x1f.caffe2.TensorProto.StorageType:\x05TYPED\x12\x16\n\nfloat_data\x18\x03 \x03(\x02\x42\x02\x10\x01\x12\x16\n\nint32_data\x18\x04 \x03(\x05\x42\x02\x10\x01\x12\x11\n\tbyte_data\x18\x05 \x01(\x0c\x12\x13\n\x0bstring_data\x18\x06 \x03(\x0c\x12\x17\n\x0b\x64ouble_data\x18\t \x03(\x01\x42\x02\x10\x01\x12\x16\n\nint64_data\x18\n \x03(\x03\x42\x02\x10\x01\x12\x10\n\x08raw_data\x18\r \x01(\x0c\x12\x30\n\rexternal_data\x18\x0e \x01(\x0b\x32\x19.caffe2.ExternalDataProto\x12\x0c\n\x04name\x18\x07 \x01(\t\x12+\n\rdevice_detail\x18\x08 \x01(\x0b\x32\x14.caffe2.DeviceOption\x12,\n\x07segment\x18\x0b \x01(\x0b\x32\x1b.caffe2.TensorProto.Segment\x1a%\n\x07Segment\x12\r\n\x05\x62\x65gin\x18\x01 \x02(\x03\x12\x0b\n\x03\x65nd\x18\x02 \x02(\x03\"\xb8\x01\n\x08\x44\x61taType\x12\r\n\tUNDEFINED\x10\x00\x12\t\n\x05\x46LOAT\x10\x01\x12\t\n\x05INT32\x10\x02\x12\x08\n\x04\x42YTE\x10\x03\x12\n\n\x06STRING\x10\x04\x12\x08\n\x04\x42OOL\x10\x05\x12\t\n\x05UINT8\x10\x06\x12\x08\n\x04INT8\x10\x07\x12\n\n\x06UINT16\x10\x08\x12\t\n\x05INT16\x10\t\x12\t\n\x05INT64\x10\n\x12\x0b\n\x07\x46LOAT16\x10\x0c\x12\n\n\x06\x44OUBLE\x10\r\x12\x17\n\x13ZERO_COLLISION_HASH\x10\x0e\"?\n\x0bStorageType\x12\t\n\x05TYPED\x10\x01\x12\x07\n\x03RAW\x10\x02\x12\x0c\n\x08\x45XTERNAL\x10\x03\x12\x0e\n\nNO_CONTENT\x10\x04\"\x83\x02\n\x0cQTensorProto\x12\x0c\n\x04\x64ims\x18\x01 \x03(\x03\x12\x11\n\tprecision\x18\x02 \x02(\x05\x12\r\n\x05scale\x18\x03 \x02(\x01\x12\x0c\n\x04\x62ias\x18\x04 \x02(\x01\x12\x11\n\tis_signed\x18\x05 \x02(\x08\x12\x10\n\x04\x64\x61ta\x18\x06 \x03(\x05\x42\x02\x10\x01\x12\x0c\n\x04name\x18\x07 \x01(\t\x12\x36\n\tdata_type\x18\x08 \x01(\x0e\x32\x1c.caffe2.TensorProto.DataType:\x05INT32\x12\x0e\n\x06scales\x18\t \x03(\x01\x12\x0e\n\x06\x62iases\x18\n \x03(\x01\x12\x0c\n\x04\x61xis\x18\x0b \x01(\x05\x12\x1c\n\ris_multiparam\x18\x0c \x01(\x08:\x05\x66\x61lse\"3\n\x0cTensorProtos\x12#\n\x06protos\x18\x01 \x03(\x0b\x32\x13.caffe2.TensorProto\"\x95\x01\n\x0bTensorShape\x12\x0c\n\x04\x64ims\x18\x01 \x03(\x03\x12\x36\n\tdata_type\x18\x02 \x01(\x0e\x32\x1c.caffe2.TensorProto.DataType:\x05\x46LOAT\x12\x14\n\x0cunknown_dims\x18\x03 \x03(\x05\x12\x1c\n\runknown_shape\x18\x04 \x01(\x08:\x05\x66\x61lse\x12\x0c\n\x04name\x18\x05 \x01(\t\"3\n\x0cTensorShapes\x12#\n\x06shapes\x18\x01 \x03(\x0b\x32\x13.caffe2.TensorShape\"\x90\x02\n\x10TensorBoundShape\x12\"\n\x05shape\x18\x01 \x01(\x0b\x32\x13.caffe2.TensorShape\x12\x32\n\x08\x64im_type\x18\x02 \x03(\x0e\x32 .caffe2.TensorBoundShape.DimType\x12\x0c\n\x04name\x18\x03 \x01(\t\"\x95\x01\n\x07\x44imType\x12\x0b\n\x07UNKNOWN\x10\x00\x12\x0c\n\x08\x43ONSTANT\x10\x01\x12\t\n\x05\x42\x41TCH\x10\x02\x12\x18\n\x14\x42\x41TCH_OF_FEATURE_MAX\x10\x03\x12 \n\x1c\x42\x41TCH_OF_FEATURE_MAX_DEFAULT\x10\x04\x12\x0f\n\x0b\x46\x45\x41TURE_MAX\x10\x05\x12\x17\n\x13\x46\x45\x41TURE_MAX_DEFAULT\x10\x06\"n\n\x11TensorBoundShapes\x12(\n\x06shapes\x18\x01 \x03(\x0b\x32\x18.caffe2.TensorBoundShape\x12\x16\n\x0emax_batch_size\x18\x02 \x01(\x03\x12\x17\n\x0fmax_feature_len\x18\x03 \x01(\x03\"U\n\tAOTConfig\x12\x16\n\x0emax_batch_size\x18\x01 \x02(\x03\x12\x14\n\x0cmax_seq_size\x18\x02 \x02(\x03\x12\x1a\n\x12in_batch_broadcast\x18\x03 \x02(\x08\"\x8f\x02\n\x08\x41rgument\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\t\n\x01\x66\x18\x02 \x01(\x02\x12\t\n\x01i\x18\x03 \x01(\x03\x12\t\n\x01s\x18\x04 \x01(\x0c\x12\x1e\n\x01t\x18\n \x01(\x0b\x32\x13.caffe2.TensorProto\x12\x19\n\x01n\x18\x08 \x01(\x0b\x32\x0e.caffe2.NetDef\x12\x0e\n\x06\x66loats\x18\x05 \x03(\x02\x12\x0c\n\x04ints\x18\x06 \x03(\x03\x12\x0f\n\x07strings\x18\x07 \x03(\x0c\x12$\n\x07tensors\x18\x0b \x03(\x0b\x32\x13.caffe2.TensorProto\x12\x1c\n\x04nets\x18\t \x03(\x0b\x32\x0e.caffe2.NetDef\x12&\n\x08qtensors\x18\x0c \x03(\x0b\x32\x14.caffe2.QTensorProto\"\x8b\x01\n\x0c\x44\x65viceOption\x12\x16\n\x0b\x64\x65vice_type\x18\x01 \x01(\x05:\x01\x30\x12\x11\n\tdevice_id\x18\x02 \x01(\x05\x12\x13\n\x0brandom_seed\x18\x03 \x01(\r\x12\x11\n\tnode_name\x18\x04 \x01(\t\x12\x14\n\x0cnuma_node_id\x18\x05 \x01(\x05\x12\x12\n\nextra_info\x18\x06 \x03(\t\"\x92\x02\n\x0bOperatorDef\x12\r\n\x05input\x18\x01 \x03(\t\x12\x0e\n\x06output\x18\x02 \x03(\t\x12\x0c\n\x04name\x18\x03 \x01(\t\x12\x0c\n\x04type\x18\x04 \x01(\t\x12\x1d\n\x03\x61rg\x18\x05 \x03(\x0b\x32\x10.caffe2.Argument\x12+\n\rdevice_option\x18\x06 \x01(\x0b\x32\x14.caffe2.DeviceOption\x12\x0e\n\x06\x65ngine\x18\x07 \x01(\t\x12\x15\n\rcontrol_input\x18\x08 \x03(\t\x12\x1d\n\x0eis_gradient_op\x18\t \x01(\x08:\x05\x66\x61lse\x12\x12\n\ndebug_info\x18\n \x01(\t\x12\x0e\n\x06\x64omain\x18\x0b \x01(\t\x12\x12\n\nop_version\x18\x0c \x01(\x03\")\n\rMapFieldEntry\x12\x0b\n\x03key\x18\x01 \x02(\t\x12\x0b\n\x03val\x18\x02 \x02(\t\"M\n\x0e\x42\x61\x63kendOptions\x12\x14\n\x0c\x62\x61\x63kend_name\x18\x01 \x02(\t\x12%\n\x06option\x18\x02 \x03(\x0b\x32\x15.caffe2.MapFieldEntry\"u\n\rPartitionInfo\x12\x0c\n\x04name\x18\x01 \x02(\t\x12\x11\n\tdevice_id\x18\x02 \x03(\x05\x12\x12\n\nextra_info\x18\x03 \x01(\t\x12/\n\x0f\x62\x61\x63kend_options\x18\x04 \x03(\x0b\x32\x16.caffe2.BackendOptions\"\x86\x02\n\x06NetDef\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x1f\n\x02op\x18\x02 \x03(\x0b\x32\x13.caffe2.OperatorDef\x12\x0c\n\x04type\x18\x03 \x01(\t\x12\x13\n\x0bnum_workers\x18\x04 \x01(\x05\x12+\n\rdevice_option\x18\x05 \x01(\x0b\x32\x14.caffe2.DeviceOption\x12\x1d\n\x03\x61rg\x18\x06 \x03(\x0b\x32\x10.caffe2.Argument\x12\x16\n\x0e\x65xternal_input\x18\x07 \x03(\t\x12\x17\n\x0f\x65xternal_output\x18\x08 \x03(\t\x12-\n\x0epartition_info\x18\t \x03(\x0b\x32\x15.caffe2.PartitionInfo\"\xcf\x02\n\rExecutionStep\x12\x0c\n\x04name\x18\x01 \x01(\t\x12&\n\x07substep\x18\x02 \x03(\x0b\x32\x15.caffe2.ExecutionStep\x12\x0f\n\x07network\x18\x03 \x03(\t\x12\x10\n\x08num_iter\x18\x04 \x01(\x03\x12\x1c\n\x10\x63riteria_network\x18\x05 \x01(\tB\x02\x18\x01\x12\x12\n\nreport_net\x18\x07 \x01(\t\x12\x17\n\x0freport_interval\x18\x08 \x01(\x05\x12\x14\n\x0crun_every_ms\x18\x0b \x01(\x03\x12\x1b\n\x13\x63oncurrent_substeps\x18\x06 \x01(\x08\x12\x18\n\x10should_stop_blob\x18\t \x01(\t\x12\x11\n\tonly_once\x18\n \x01(\x08\x12\x18\n\x10\x63reate_workspace\x18\x0c \x01(\x08\x12 \n\x18num_concurrent_instances\x18\r \x01(\x05\"g\n\x07PlanDef\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x1f\n\x07network\x18\x02 \x03(\x0b\x32\x0e.caffe2.NetDef\x12-\n\x0e\x65xecution_step\x18\x03 \x03(\x0b\x32\x15.caffe2.ExecutionStep\"\xba\x01\n\tBlobProto\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0c\n\x04type\x18\x02 \x01(\t\x12#\n\x06tensor\x18\x03 \x01(\x0b\x32\x13.caffe2.TensorProto\x12\x0f\n\x07\x63ontent\x18\x04 \x01(\x0c\x12%\n\x07qtensor\x18\x05 \x01(\x0b\x32\x14.caffe2.QTensorProto\x12\x1a\n\x12\x63ontent_num_chunks\x18\x06 \x01(\x05\x12\x18\n\x10\x63ontent_chunk_id\x18\x07 \x01(\x05\"K\n\rDBReaderProto\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x0e\n\x06source\x18\x02 \x01(\t\x12\x0f\n\x07\x64\x62_type\x18\x03 \x01(\t\x12\x0b\n\x03key\x18\x04 \x01(\t*\xfa\x01\n\x0f\x44\x65viceTypeProto\x12\r\n\tPROTO_CPU\x10\x00\x12\x0e\n\nPROTO_CUDA\x10\x01\x12\x10\n\x0cPROTO_MKLDNN\x10\x02\x12\x10\n\x0cPROTO_OPENGL\x10\x03\x12\x10\n\x0cPROTO_OPENCL\x10\x04\x12\x0f\n\x0bPROTO_IDEEP\x10\x05\x12\r\n\tPROTO_HIP\x10\x06\x12\x0e\n\nPROTO_FPGA\x10\x07\x12\x0f\n\x0bPROTO_MSNPU\x10\x08\x12\r\n\tPROTO_XLA\x10\t\x12\'\n#PROTO_COMPILE_TIME_MAX_DEVICE_TYPES\x10\n\x12\x19\n\x13PROTO_ONLY_FOR_TEST\x10\xa5\xa3\x01'
 )
 
 _DEVICETYPEPROTO = _descriptor.EnumDescriptor(
@@ -69,18 +69,18 @@ _DEVICETYPEPROTO = _descriptor.EnumDescriptor(
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='PROTO_MLC', index=10, number=10,
+      name='PROTO_COMPILE_TIME_MAX_DEVICE_TYPES', index=10, number=10,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='PROTO_COMPILE_TIME_MAX_DEVICE_TYPES', index=11, number=11,
+      name='PROTO_ONLY_FOR_TEST', index=11, number=20901,
       serialized_options=None,
       type=None),
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=3990,
-  serialized_end=4228,
+  serialized_start=3917,
+  serialized_end=4167,
 )
 _sym_db.RegisterEnumDescriptor(_DEVICETYPEPROTO)
 
@@ -95,9 +95,31 @@ PROTO_HIP = 6
 PROTO_FPGA = 7
 PROTO_MSNPU = 8
 PROTO_XLA = 9
-PROTO_MLC = 10
-PROTO_COMPILE_TIME_MAX_DEVICE_TYPES = 11
+PROTO_COMPILE_TIME_MAX_DEVICE_TYPES = 10
+PROTO_ONLY_FOR_TEST = 20901
 
+
+_EXTERNALDATAPROTO_SOURCETYPE = _descriptor.EnumDescriptor(
+  name='SourceType',
+  full_name='caffe2.ExternalDataProto.SourceType',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='INLINE_CONTAINER', index=0, number=0,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='SIMPLE_FILE', index=1, number=1,
+      serialized_options=None,
+      type=None),
+  ],
+  containing_type=None,
+  serialized_options=None,
+  serialized_start=212,
+  serialized_end=263,
+)
+_sym_db.RegisterEnumDescriptor(_EXTERNALDATAPROTO_SOURCETYPE)
 
 _TENSORPROTO_DATATYPE = _descriptor.EnumDescriptor(
   name='DataType',
@@ -161,39 +183,43 @@ _TENSORPROTO_DATATYPE = _descriptor.EnumDescriptor(
       name='ZERO_COLLISION_HASH', index=13, number=14,
       serialized_options=None,
       type=None),
-    _descriptor.EnumValueDescriptor(
-      name='REBATCHING_BUFFER', index=14, number=15,
-      serialized_options=None,
-      type=None),
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=447,
-  serialized_end=654,
+  serialized_start=763,
+  serialized_end=947,
 )
 _sym_db.RegisterEnumDescriptor(_TENSORPROTO_DATATYPE)
 
-_TENSORPROTO_SERIALIZATIONFORMAT = _descriptor.EnumDescriptor(
-  name='SerializationFormat',
-  full_name='caffe2.TensorProto.SerializationFormat',
+_TENSORPROTO_STORAGETYPE = _descriptor.EnumDescriptor(
+  name='StorageType',
+  full_name='caffe2.TensorProto.StorageType',
   filename=None,
   file=DESCRIPTOR,
   values=[
     _descriptor.EnumValueDescriptor(
-      name='FMT_PROTOBUF', index=0, number=0,
+      name='TYPED', index=0, number=1,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='FMT_BFLOAT16', index=1, number=1,
+      name='RAW', index=1, number=2,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='EXTERNAL', index=2, number=3,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='NO_CONTENT', index=3, number=4,
       serialized_options=None,
       type=None),
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=656,
-  serialized_end=713,
+  serialized_start=949,
+  serialized_end=1012,
 )
-_sym_db.RegisterEnumDescriptor(_TENSORPROTO_SERIALIZATIONFORMAT)
+_sym_db.RegisterEnumDescriptor(_TENSORPROTO_STORAGETYPE)
 
 _TENSORBOUNDSHAPE_DIMTYPE = _descriptor.EnumDescriptor(
   name='DimType',
@@ -232,36 +258,70 @@ _TENSORBOUNDSHAPE_DIMTYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1383,
-  serialized_end=1532,
+  serialized_start=1658,
+  serialized_end=1807,
 )
 _sym_db.RegisterEnumDescriptor(_TENSORBOUNDSHAPE_DIMTYPE)
 
-_BLOBSERIALIZATIONOPTIONS_FLOATFORMAT = _descriptor.EnumDescriptor(
-  name='FloatFormat',
-  full_name='caffe2.BlobSerializationOptions.FloatFormat',
+
+_EXTERNALDATAPROTO = _descriptor.Descriptor(
+  name='ExternalDataProto',
+  full_name='caffe2.ExternalDataProto',
   filename=None,
   file=DESCRIPTOR,
-  values=[
-    _descriptor.EnumValueDescriptor(
-      name='FLOAT_DEFAULT', index=0, number=0,
-      serialized_options=None,
-      type=None),
-    _descriptor.EnumValueDescriptor(
-      name='FLOAT_PROTOBUF', index=1, number=1,
-      serialized_options=None,
-      type=None),
-    _descriptor.EnumValueDescriptor(
-      name='FLOAT_BFLOAT16', index=2, number=2,
-      serialized_options=None,
-      type=None),
-  ],
   containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='source_type', full_name='caffe2.ExternalDataProto.source_type', index=0,
+      number=1, type=14, cpp_type=8, label=1,
+      has_default_value=True, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='record_id', full_name='caffe2.ExternalDataProto.record_id', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='record_size', full_name='caffe2.ExternalDataProto.record_size', index=2,
+      number=5, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='offset', full_name='caffe2.ExternalDataProto.offset', index=3,
+      number=3, type=3, cpp_type=2, label=1,
+      has_default_value=True, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='strides', full_name='caffe2.ExternalDataProto.strides', index=4,
+      number=4, type=3, cpp_type=2, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+    _EXTERNALDATAPROTO_SOURCETYPE,
+  ],
   serialized_options=None,
-  serialized_start=3840,
-  serialized_end=3912,
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=38,
+  serialized_end=263,
 )
-_sym_db.RegisterEnumDescriptor(_BLOBSERIALIZATIONOPTIONS_FLOATFORMAT)
 
 
 _TENSORPROTO_SEGMENT = _descriptor.Descriptor(
@@ -297,8 +357,8 @@ _TENSORPROTO_SEGMENT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=407,
-  serialized_end=444,
+  serialized_start=723,
+  serialized_end=760,
 )
 
 _TENSORPROTO = _descriptor.Descriptor(
@@ -323,9 +383,9 @@ _TENSORPROTO = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='data_format', full_name='caffe2.TensorProto.data_format', index=2,
-      number=15, type=13, cpp_type=3, label=1,
-      has_default_value=True, default_value=0,
+      name='storage_type', full_name='caffe2.TensorProto.storage_type', index=2,
+      number=12, type=14, cpp_type=8, label=1,
+      has_default_value=True, default_value=1,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -379,21 +439,28 @@ _TENSORPROTO = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='name', full_name='caffe2.TensorProto.name', index=10,
+      name='external_data', full_name='caffe2.TensorProto.external_data', index=10,
+      number=14, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='name', full_name='caffe2.TensorProto.name', index=11,
       number=7, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='device_detail', full_name='caffe2.TensorProto.device_detail', index=11,
+      name='device_detail', full_name='caffe2.TensorProto.device_detail', index=12,
       number=8, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='segment', full_name='caffe2.TensorProto.segment', index=12,
+      name='segment', full_name='caffe2.TensorProto.segment', index=13,
       number=11, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -405,7 +472,7 @@ _TENSORPROTO = _descriptor.Descriptor(
   nested_types=[_TENSORPROTO_SEGMENT, ],
   enum_types=[
     _TENSORPROTO_DATATYPE,
-    _TENSORPROTO_SERIALIZATIONFORMAT,
+    _TENSORPROTO_STORAGETYPE,
   ],
   serialized_options=None,
   is_extendable=False,
@@ -413,8 +480,8 @@ _TENSORPROTO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=38,
-  serialized_end=713,
+  serialized_start=266,
+  serialized_end=1012,
 )
 
 
@@ -521,8 +588,8 @@ _QTENSORPROTO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=716,
-  serialized_end=975,
+  serialized_start=1015,
+  serialized_end=1274,
 )
 
 
@@ -552,8 +619,8 @@ _TENSORPROTOS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=977,
-  serialized_end=1028,
+  serialized_start=1276,
+  serialized_end=1327,
 )
 
 
@@ -611,8 +678,8 @@ _TENSORSHAPE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1031,
-  serialized_end=1180,
+  serialized_start=1330,
+  serialized_end=1479,
 )
 
 
@@ -642,8 +709,8 @@ _TENSORSHAPES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1182,
-  serialized_end=1233,
+  serialized_start=1481,
+  serialized_end=1532,
 )
 
 
@@ -675,13 +742,6 @@ _TENSORBOUNDSHAPE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='shape_is_final', full_name='caffe2.TensorBoundShape.shape_is_final', index=3,
-      number=4, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -695,8 +755,8 @@ _TENSORBOUNDSHAPE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1236,
-  serialized_end=1532,
+  serialized_start=1535,
+  serialized_end=1807,
 )
 
 
@@ -740,8 +800,8 @@ _TENSORBOUNDSHAPES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1534,
-  serialized_end=1644,
+  serialized_start=1809,
+  serialized_end=1919,
 )
 
 
@@ -773,20 +833,6 @@ _AOTCONFIG = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='onnxifi_blacklist_ops', full_name='caffe2.AOTConfig.onnxifi_blacklist_ops', index=3,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='onnxifi_min_ops', full_name='caffe2.AOTConfig.onnxifi_min_ops', index=4,
-      number=5, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -799,8 +845,8 @@ _AOTCONFIG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1647,
-  serialized_end=1788,
+  serialized_start=1921,
+  serialized_end=2006,
 )
 
 
@@ -907,8 +953,8 @@ _ARGUMENT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1791,
-  serialized_end=2062,
+  serialized_start=2009,
+  serialized_end=2280,
 )
 
 
@@ -973,8 +1019,8 @@ _DEVICEOPTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2065,
-  serialized_end=2204,
+  serialized_start=2283,
+  serialized_end=2422,
 )
 
 
@@ -1081,8 +1127,8 @@ _OPERATORDEF = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2207,
-  serialized_end=2481,
+  serialized_start=2425,
+  serialized_end=2699,
 )
 
 
@@ -1119,8 +1165,8 @@ _MAPFIELDENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2483,
-  serialized_end=2524,
+  serialized_start=2701,
+  serialized_end=2742,
 )
 
 
@@ -1157,8 +1203,8 @@ _BACKENDOPTIONS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2526,
-  serialized_end=2603,
+  serialized_start=2744,
+  serialized_end=2821,
 )
 
 
@@ -1209,8 +1255,8 @@ _PARTITIONINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2605,
-  serialized_end=2722,
+  serialized_start=2823,
+  serialized_end=2940,
 )
 
 
@@ -1296,8 +1342,8 @@ _NETDEF = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2725,
-  serialized_end=2987,
+  serialized_start=2943,
+  serialized_end=3205,
 )
 
 
@@ -1411,8 +1457,8 @@ _EXECUTIONSTEP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2990,
-  serialized_end=3325,
+  serialized_start=3208,
+  serialized_end=3543,
 )
 
 
@@ -1456,8 +1502,8 @@ _PLANDEF = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3327,
-  serialized_end=3430,
+  serialized_start=3545,
+  serialized_end=3648,
 )
 
 
@@ -1529,8 +1575,8 @@ _BLOBPROTO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3433,
-  serialized_end=3619,
+  serialized_start=3651,
+  serialized_end=3837,
 )
 
 
@@ -1581,93 +1627,20 @@ _DBREADERPROTO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3621,
-  serialized_end=3696,
+  serialized_start=3839,
+  serialized_end=3914,
 )
 
-
-_BLOBSERIALIZATIONOPTIONS = _descriptor.Descriptor(
-  name='BlobSerializationOptions',
-  full_name='caffe2.BlobSerializationOptions',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='blob_name_regex', full_name='caffe2.BlobSerializationOptions.blob_name_regex', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='chunk_size', full_name='caffe2.BlobSerializationOptions.chunk_size', index=1,
-      number=2, type=3, cpp_type=2, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='float_format', full_name='caffe2.BlobSerializationOptions.float_format', index=2,
-      number=3, type=14, cpp_type=8, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-    _BLOBSERIALIZATIONOPTIONS_FLOATFORMAT,
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto2',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=3699,
-  serialized_end=3912,
-)
-
-
-_SERIALIZATIONOPTIONS = _descriptor.Descriptor(
-  name='SerializationOptions',
-  full_name='caffe2.SerializationOptions',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='options', full_name='caffe2.SerializationOptions.options', index=0,
-      number=1, type=11, cpp_type=10, label=3,
-      has_default_value=False, default_value=[],
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto2',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=3914,
-  serialized_end=3987,
-)
-
+_EXTERNALDATAPROTO.fields_by_name['source_type'].enum_type = _EXTERNALDATAPROTO_SOURCETYPE
+_EXTERNALDATAPROTO_SOURCETYPE.containing_type = _EXTERNALDATAPROTO
 _TENSORPROTO_SEGMENT.containing_type = _TENSORPROTO
 _TENSORPROTO.fields_by_name['data_type'].enum_type = _TENSORPROTO_DATATYPE
+_TENSORPROTO.fields_by_name['storage_type'].enum_type = _TENSORPROTO_STORAGETYPE
+_TENSORPROTO.fields_by_name['external_data'].message_type = _EXTERNALDATAPROTO
 _TENSORPROTO.fields_by_name['device_detail'].message_type = _DEVICEOPTION
 _TENSORPROTO.fields_by_name['segment'].message_type = _TENSORPROTO_SEGMENT
 _TENSORPROTO_DATATYPE.containing_type = _TENSORPROTO
-_TENSORPROTO_SERIALIZATIONFORMAT.containing_type = _TENSORPROTO
+_TENSORPROTO_STORAGETYPE.containing_type = _TENSORPROTO
 _QTENSORPROTO.fields_by_name['data_type'].enum_type = _TENSORPROTO_DATATYPE
 _TENSORPROTOS.fields_by_name['protos'].message_type = _TENSORPROTO
 _TENSORSHAPE.fields_by_name['data_type'].enum_type = _TENSORPROTO_DATATYPE
@@ -1694,9 +1667,7 @@ _PLANDEF.fields_by_name['network'].message_type = _NETDEF
 _PLANDEF.fields_by_name['execution_step'].message_type = _EXECUTIONSTEP
 _BLOBPROTO.fields_by_name['tensor'].message_type = _TENSORPROTO
 _BLOBPROTO.fields_by_name['qtensor'].message_type = _QTENSORPROTO
-_BLOBSERIALIZATIONOPTIONS.fields_by_name['float_format'].enum_type = _BLOBSERIALIZATIONOPTIONS_FLOATFORMAT
-_BLOBSERIALIZATIONOPTIONS_FLOATFORMAT.containing_type = _BLOBSERIALIZATIONOPTIONS
-_SERIALIZATIONOPTIONS.fields_by_name['options'].message_type = _BLOBSERIALIZATIONOPTIONS
+DESCRIPTOR.message_types_by_name['ExternalDataProto'] = _EXTERNALDATAPROTO
 DESCRIPTOR.message_types_by_name['TensorProto'] = _TENSORPROTO
 DESCRIPTOR.message_types_by_name['QTensorProto'] = _QTENSORPROTO
 DESCRIPTOR.message_types_by_name['TensorProtos'] = _TENSORPROTOS
@@ -1716,10 +1687,15 @@ DESCRIPTOR.message_types_by_name['ExecutionStep'] = _EXECUTIONSTEP
 DESCRIPTOR.message_types_by_name['PlanDef'] = _PLANDEF
 DESCRIPTOR.message_types_by_name['BlobProto'] = _BLOBPROTO
 DESCRIPTOR.message_types_by_name['DBReaderProto'] = _DBREADERPROTO
-DESCRIPTOR.message_types_by_name['BlobSerializationOptions'] = _BLOBSERIALIZATIONOPTIONS
-DESCRIPTOR.message_types_by_name['SerializationOptions'] = _SERIALIZATIONOPTIONS
 DESCRIPTOR.enum_types_by_name['DeviceTypeProto'] = _DEVICETYPEPROTO
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
+
+ExternalDataProto = _reflection.GeneratedProtocolMessageType('ExternalDataProto', (_message.Message,), {
+  'DESCRIPTOR' : _EXTERNALDATAPROTO,
+  '__module__' : 'caffe2.proto.caffe2_pb2'
+  # @@protoc_insertion_point(class_scope:caffe2.ExternalDataProto)
+  })
+_sym_db.RegisterMessage(ExternalDataProto)
 
 TensorProto = _reflection.GeneratedProtocolMessageType('TensorProto', (_message.Message,), {
 
@@ -1861,20 +1837,6 @@ DBReaderProto = _reflection.GeneratedProtocolMessageType('DBReaderProto', (_mess
   # @@protoc_insertion_point(class_scope:caffe2.DBReaderProto)
   })
 _sym_db.RegisterMessage(DBReaderProto)
-
-BlobSerializationOptions = _reflection.GeneratedProtocolMessageType('BlobSerializationOptions', (_message.Message,), {
-  'DESCRIPTOR' : _BLOBSERIALIZATIONOPTIONS,
-  '__module__' : 'caffe2.proto.caffe2_pb2'
-  # @@protoc_insertion_point(class_scope:caffe2.BlobSerializationOptions)
-  })
-_sym_db.RegisterMessage(BlobSerializationOptions)
-
-SerializationOptions = _reflection.GeneratedProtocolMessageType('SerializationOptions', (_message.Message,), {
-  'DESCRIPTOR' : _SERIALIZATIONOPTIONS,
-  '__module__' : 'caffe2.proto.caffe2_pb2'
-  # @@protoc_insertion_point(class_scope:caffe2.SerializationOptions)
-  })
-_sym_db.RegisterMessage(SerializationOptions)
 
 
 _TENSORPROTO.fields_by_name['float_data']._options = None

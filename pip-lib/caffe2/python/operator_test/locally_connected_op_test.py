@@ -6,10 +6,9 @@ import numpy as np
 from hypothesis import given, settings, assume
 import hypothesis.strategies as st
 
-from caffe2.python import core, utils, workspace
+from caffe2.python import core, utils
 import caffe2.python.hypothesis_test_util as hu
 import caffe2.python.serialized_test.serialized_test_util as serial
-
 
 
 class TestLocallyConnectedOp(serial.SerializedTestCase):
@@ -103,8 +102,7 @@ class TestLocallyConnectedOp(serial.SerializedTestCase):
            op_name=st.sampled_from(["LC", "LC1D"]),
            use_bias=st.booleans(),
            **hu.gcs)
-    @settings(deadline=5000)
-    # Increased timeout from 1 second to 5 for ROCM
+    @settings(deadline=1000)
     def test_lc_1d(self, N, C, size, M, kernel, op_name, use_bias, gc, dc):
         if size < kernel:
             kernel = size

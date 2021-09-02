@@ -1,6 +1,10 @@
 ## @package task
 # Module caffe2.python.task
 
+
+
+
+
 from caffe2.python import core, context
 from caffe2.python.schema import Field, from_blob_list
 from collections import defaultdict
@@ -19,7 +23,8 @@ def _merge_node_kwargs(a, b):
     return c
 
 
-class Cluster(context.DefaultManaged):
+@context.define_context(allow_default=True)
+class Cluster(object):
     """
     Context that keeps track of all the node names used.
     Users shouldn't have to use them directly, since a Cluster is automatically
@@ -52,7 +57,8 @@ class Cluster(context.DefaultManaged):
             self.nodes(), self.node_kwargs())
 
 
-class Node(context.DefaultManaged):
+@context.define_context(allow_default=True)
+class Node(object):
     """
     A Node context is used to indicate that all Tasks instantiated within will
     run on the given node name. (Only the name of the node actually counts.)
@@ -156,7 +162,8 @@ def add_setup_steps(step, init_nets, exit_nets, name):
     return core.execution_step(name, steps)
 
 
-class TaskGroup(context.Managed):
+@context.define_context(allow_default=False)
+class TaskGroup(object):
     """
     Context that gathers tasks which will run concurrently, potentially on
     multiple nodes. All tasks in the same node will share the same workspace
@@ -347,9 +354,7 @@ class TaskGroup(context.Managed):
 
     def __repr__(self):
         return "TaskGroup(tasks={}, workspace_type={}, remote_nets={})".format(
-            self._tasks + self._tasks_to_add,
-            self.workspace_type(),
-            self.remote_nets())
+            self.tasks(), self.workspace_type(), self.remote_nets())
 
 
 class TaskOutput(object):
@@ -437,7 +442,8 @@ class TaskOutputList(object):
         return "TaskOutputList(outputs={})".format(self.outputs)
 
 
-class Task(context.Managed):
+@context.define_context()
+class Task(object):
     """
     A Task is composed of an execution step and zero or more outputs.
     Tasks are executed in the context of a TaskGroup, which, in turn, can
@@ -536,8 +542,6 @@ class Task(context.Managed):
         self._num_instances = num_instances
 
     def __enter__(self):
-        super(Task, self).__enter__()
-
         # temporarily remove from _tasks_to_add to ensure correct order
         if self.group is not None:
             self.group._tasks_to_add.remove(self)
@@ -549,8 +553,6 @@ class Task(context.Managed):
         return self
 
     def __exit__(self, type, value, traceback):
-        super(Task, self).__exit__(type, value, traceback)
-
         self._net_builder.__exit__(type, value, traceback)
         if type is None:
             self.set_step(self._net_builder)

@@ -31,7 +31,6 @@ Number = Union[builtins.int, builtins.float, builtins.bool]
 Device = Union[_device, str, None]
 
 # Storage protocol implemented by ${Type}StorageBase classes
-
 class Storage(object):
     _cdata: int
 

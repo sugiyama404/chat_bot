@@ -13,14 +13,11 @@ struct unique_type_for {
 };
 
 template <typename T>
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
 struct unique_type_for<T[]> {
-  // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
   using unbounded_array = std::unique_ptr<T[]>;
 };
 
 template <typename T, size_t N>
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,modernize-avoid-c-arrays)
 struct unique_type_for<T[N]> {
   using bounded_array = void;
 };

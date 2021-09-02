@@ -11,7 +11,7 @@
 
 namespace c10 {
 
-struct TORCH_API InternedStrings {
+struct CAFFE2_API InternedStrings {
   InternedStrings();
   Symbol symbol(const std::string& s);
   std::pair<const char*, const char*> string(Symbol sym);

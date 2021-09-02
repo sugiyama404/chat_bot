@@ -1,6 +1,5 @@
 #pragma once
 #include <ATen/core/interned_strings.h>
-#include <ATen/core/jit_type.h>
 #include <c10/util/Optional.h>
 #include <c10/util/intrusive_ptr.h>
 #include <torch/csrc/WindowsTorchApiMacro.h>
@@ -53,38 +52,6 @@ struct Function;
 struct InlinedCallStack;
 
 /**
- * ModuleInstanceInfo is a structure to include the module type and instance
- * name. It also provide public methods to get the pointer to module type and
- * instance name.
- *
- * This structure is mainly used as a private member in InlinedCallStack, such
- * that one can follow the callstack to find the relevant module hierarchy.
- */
-struct ModuleInstanceInfo {
- private:
-  c10::ClassTypePtr module_type_{nullptr};
-  std::string instance_name_;
-
- public:
-  ModuleInstanceInfo() = default;
-  ModuleInstanceInfo(c10::ClassTypePtr module_type, std::string instance_name);
-  c10::ClassTypePtr class_type() {
-    return module_type_;
-  }
-  c10::ClassTypePtr class_type() const {
-    return module_type_;
-  }
-  std::string instance_name() const {
-    return instance_name_;
-  }
-
-  bool operator==(const ModuleInstanceInfo& rhs) const {
-    return (class_type() == rhs.class_type()) &&
-        (instance_name() == rhs.instance_name());
-  }
-};
-
-/**
  * InlinedCallStack is an element in a list representing callstack of functions
  * that have been inlined.
  *
@@ -113,8 +80,7 @@ struct ModuleInstanceInfo {
  *  [ham, source_range4]  --
  */
 using InlinedCallStackPtr = c10::intrusive_ptr<InlinedCallStack>;
-using InlinedCallStackEntry =
-    std::tuple<Function*, SourceRange, c10::optional<ModuleInstanceInfo>>;
+using InlinedCallStackEntry = std::pair<Function*, SourceRange>;
 
 struct TORCH_API InlinedCallStack : public c10::intrusive_ptr_target {
  private:
@@ -122,17 +88,10 @@ struct TORCH_API InlinedCallStack : public c10::intrusive_ptr_target {
   Function* fn_;
   SourceRange source_range_;
   InlinedCallStackPtr intrusive_from_this();
-  c10::optional<ModuleInstanceInfo> module_instance_info_;
 
  public:
   // Constructor for a leaf callstack node.
   InlinedCallStack(Function* fn, SourceRange source_range);
-
-  // Constructor for a leaf callstack node.
-  InlinedCallStack(
-      Function* fn,
-      SourceRange source_range,
-      c10::optional<ModuleInstanceInfo> module_instance_info);
 
   // Constructor for an inner callstack node.
   InlinedCallStack(
@@ -140,41 +99,12 @@ struct TORCH_API InlinedCallStack : public c10::intrusive_ptr_target {
       Function* fn,
       SourceRange source_range);
 
-  InlinedCallStack(
-      InlinedCallStackPtr callee,
-      Function* fn,
-      SourceRange source_range,
-      c10::optional<ModuleInstanceInfo> module_instance_info);
-
   // Return next element in the callstack list.
   c10::optional<InlinedCallStackPtr> callee() const;
 
-  // Return module instance associated with the current element.
-  c10::optional<ModuleInstanceInfo> module_instance() const;
-
-  // Returns the source range of the node
-  SourceRange source_range() const;
-
   // Return callstack as a vector of [Function, SourceRange] pairs.
   std::vector<InlinedCallStackEntry> vec();
-
-  void setCallee(c10::optional<InlinedCallStackPtr>);
-
-  bool operator==(const InlinedCallStack& rhs) const {
-    // No need to compare fn_, since source_range equivalence check
-    // should suffice.
-    return (module_instance().has_value() ==
-            rhs.module_instance().has_value()) &&
-        (module_instance().has_value() &&
-         module_instance().value() == rhs.module_instance().value()) &&
-        callee() == rhs.callee() && source_range() == rhs.source_range();
-  }
-
-  bool operator!=(const InlinedCallStack& rhs) const {
-    return !(*this == rhs);
-  }
 };
 
-using DebugInfoPair = std::pair<SourceRange, InlinedCallStackPtr>;
 } // namespace jit
 } // namespace torch

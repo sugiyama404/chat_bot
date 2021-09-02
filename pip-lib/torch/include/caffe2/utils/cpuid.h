@@ -12,7 +12,7 @@ namespace caffe2 {
 
 class CpuId;
 
-TORCH_API const CpuId& GetCpuId();
+CAFFE2_API const CpuId& GetCpuId();
 
 ///////////////////////////////////////////////////////////////////////////////
 // Implementation of CpuId that is borrowed from folly.
@@ -137,10 +137,10 @@ class CpuId {
 #undef X
 
  private:
-  TORCH_API static uint32_t f1c_;
-  TORCH_API static uint32_t f1d_;
-  TORCH_API static uint32_t f7b_;
-  TORCH_API static uint32_t f7c_;
+  CAFFE2_API static uint32_t f1c_;
+  CAFFE2_API static uint32_t f1d_;
+  CAFFE2_API static uint32_t f7b_;
+  CAFFE2_API static uint32_t f7c_;
 };
 
 } // namespace caffe2

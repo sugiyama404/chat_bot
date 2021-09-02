@@ -22,6 +22,13 @@
 #include <TH/generic/THTensor.h>
 #include <TH/THGenerateBFloat16Type.h>
 
+/* random numbers */
+#include <TH/generic/THTensorRandom.h>
+#include <TH/THGenerateAllTypes.h>
+
+#include <TH/generic/THTensorRandom.h>
+#include <TH/THGenerateBoolType.h>
+
 /* maths */
 #include <TH/generic/THTensorMath.h>
 #include <TH/THGenerateAllTypes.h>
@@ -34,9 +41,6 @@
 
 #include <TH/generic/THTensorMath.h>
 #include <TH/THGenerateBFloat16Type.h>
-
-#include <TH/generic/THTensorMath.h>
-#include <TH/THGenerateComplexTypes.h>
 
 /* lapack support */
 #include <TH/generic/THTensorLapack.h>

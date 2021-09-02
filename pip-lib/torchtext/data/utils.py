@@ -2,6 +2,7 @@ import random
 from contextlib import contextmanager
 from copy import deepcopy
 import re
+
 from functools import partial
 
 
@@ -75,7 +76,7 @@ def get_tokenizer(tokenizer, language='en'):
     r"""
     Generate tokenizer function for a string sentence.
 
-    Args:
+    Arguments:
         tokenizer: the name of tokenizer function. If None, it returns split()
             function, which splits the string sentence by space.
             If basic_english, it returns _basic_english_normalize() function,
@@ -111,17 +112,7 @@ def get_tokenizer(tokenizer, language='en'):
     if tokenizer == "spacy":
         try:
             import spacy
-            try:
-                spacy = spacy.load(language)
-            except IOError:
-                # Model shortcuts no longer work in spaCy 3.0+, try using fullnames
-                # List is from https://github.com/explosion/spaCy/blob/b903de3fcb56df2f7247e5b6cfa6b66f4ff02b62/spacy/errors.py#L789
-                OLD_MODEL_SHORTCUTS = spacy.errors.OLD_MODEL_SHORTCUTS if hasattr(spacy.errors, 'OLD_MODEL_SHORTCUTS') else {}
-                if language not in OLD_MODEL_SHORTCUTS:
-                    raise
-                import warnings
-                warnings.warn(f'Spacy model "{language}" could not be loaded, trying "{OLD_MODEL_SHORTCUTS[language]}" instead')
-                spacy = spacy.load(OLD_MODEL_SHORTCUTS[language])
+            spacy = spacy.load(language)
             return partial(_spacy_tokenize, spacy=spacy)
         except ImportError:
             print("Please install SpaCy. "
@@ -214,7 +205,7 @@ def dtype_to_attr(dtype):
 def ngrams_iterator(token_list, ngrams):
     """Return an iterator that yields the given tokens and their ngrams.
 
-    Args:
+    Arguments:
         token_list: A list of tokens
         ngrams: the number of ngrams.
 

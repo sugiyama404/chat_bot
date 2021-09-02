@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """End-to-end example to test a PR for regressions:
 
 $ python -m examples.end_to_end --pr 39850

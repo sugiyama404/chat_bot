@@ -21,7 +21,6 @@ using valid_dict_key_types = guts::typelist::typelist<
   int64_t,
   std::string,
   double,
-  c10::complex<double>,
   bool,
   at::Tensor
 >;

@@ -60,16 +60,17 @@ struct FakeGuardImpl final : public DeviceGuardImplInterface {
 
   // Event-related functions
   void record(
-      void** event,
-      const Stream& stream,
-      const DeviceIndex device_index,
-      const EventFlag flag) const override {}
-  void block(void* event, const Stream& stream) const override {}
-  bool queryEvent(void* event) const override {
-    return true;
-  }
-  void destroyEvent(void* event, const DeviceIndex device_index)
-      const noexcept override {}
+    void** event,
+    const Stream& stream,
+    const DeviceIndex device_index,
+    const EventFlag flag) const override { }
+  void block(
+    void* event,
+    const Stream& stream) const override { }
+  bool queryEvent(void* event) const override { return true; }
+  void destroyEvent(
+    void* event,
+    const DeviceIndex device_index) const noexcept override { }
 
   // Convenience methods for testing
   static DeviceIndex getDeviceIndex() {
@@ -86,11 +87,9 @@ struct FakeGuardImpl final : public DeviceGuardImplInterface {
   static void resetStreams() {
     current_streams_.fill(0);
   }
-
- private:
+private:
   thread_local static DeviceIndex current_device_;
-  thread_local static std::array<StreamId, kFakeGuardImplMaxDevices>
-      current_streams_;
+  thread_local static std::array<StreamId, kFakeGuardImplMaxDevices> current_streams_;
 };
 
 template <DeviceType T>
@@ -100,8 +99,7 @@ template <DeviceType T>
 constexpr DeviceType FakeGuardImpl<T>::static_type;
 
 template <DeviceType T>
-thread_local std::array<StreamId, kFakeGuardImplMaxDevices>
-    FakeGuardImpl<T>::current_streams_ = {0, 0, 0, 0, 0, 0, 0, 0};
+thread_local std::array<StreamId, kFakeGuardImplMaxDevices> FakeGuardImpl<T>::current_streams_ = {0,0,0,0,0,0,0,0};
 
-} // namespace impl
-} // namespace c10
+
+}} // namespace c10::impl

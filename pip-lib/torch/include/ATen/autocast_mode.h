@@ -3,12 +3,6 @@
 namespace at {
 namespace autocast {
 
-namespace {
-  bool is_autocast_eligible(const Tensor& tensor) {
-    return (tensor.is_cuda() || tensor.is_xla()) && tensor.is_floating_point();
-  }
-} // namespace
-
 TORCH_API bool is_enabled();
 TORCH_API void set_enabled(bool enabled);
 TORCH_API void clear_cache();
@@ -27,7 +21,7 @@ inline at::ScalarType prioritize(at::ScalarType current, const Tensor& nextArg) 
     AT_ERROR("promote type is double in at::autocast::prioritize");
     return current;
   }
-  if (is_autocast_eligible(nextArg)) {
+  if (nextArg.is_cuda() && nextArg.is_floating_point()) {
     auto next = nextArg.scalar_type();
     if (next == at::kDouble) {
       return current; // ignores double tensors
@@ -76,7 +70,7 @@ inline at::ScalarType promote_type(at::ScalarType current, Arg0 arg0, Args... ar
 Logic to apply cached casting to any Tensor argument.
 ****************************************************/
 inline bool is_eligible(const Tensor& arg) {
-  return (arg.defined() && is_autocast_eligible(arg) && (arg.scalar_type() != at::kDouble));
+  return (arg.defined() && arg.is_cuda() && arg.is_floating_point() && (arg.scalar_type() != at::kDouble));
 }
 
 // Overload to catch Tensor args

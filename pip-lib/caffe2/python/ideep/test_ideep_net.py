@@ -9,6 +9,7 @@ from caffe2.python.models.download import ModelDownloader
 import numpy as np
 import argparse
 import time
+import os.path
 
 
 def GetArgumentParser():

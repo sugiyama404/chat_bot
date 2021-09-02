@@ -61,7 +61,6 @@ set_target_properties(tensorpipe_uv PROPERTIES
 add_library(tensorpipe STATIC IMPORTED)
 
 set_target_properties(tensorpipe PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include"
   INTERFACE_LINK_LIBRARIES "\$<LINK_ONLY:tensorpipe_uv>"
 )
 

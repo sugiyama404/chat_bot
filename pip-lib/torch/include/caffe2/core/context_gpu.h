@@ -69,9 +69,7 @@ class CAFFE2_CUDA_API ThreadLocalCUDAObjects {
   // CUDAContext::SwitchToDevice
   void SetCurrentStreamId(DeviceIndex gpu, StreamId stream_id) {
     // TODO: use current device id from thread local instead of passing gpu in
-    if (stream_id != -1) {
-      c10::cuda::setCurrentCUDAStream(GetCUDAStream(gpu, stream_id));
-    }
+    c10::cuda::setCurrentCUDAStream(GetCUDAStream(gpu, stream_id));
   }
 
   // Retrieves the CUDAStream corresponding to a logical stream ID, ensuring
@@ -281,7 +279,7 @@ class CAFFE2_CUDA_API CUDAContext final : public BaseContext {
 
   template <class SrcContext, class DstContext>
   inline void
-  CopyItems(const TypeMeta meta, size_t n, const void* src, void* dst) {
+  CopyItems(const TypeMeta& meta, size_t n, const void* src, void* dst) {
     CAFFE_ENFORCE(!meta.copy(), "CUDAContext requires fundamental types.");
     CopyBytes<SrcContext, DstContext>(n * meta.itemsize(), src, dst);
   }

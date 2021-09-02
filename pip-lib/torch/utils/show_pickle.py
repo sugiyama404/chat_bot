@@ -45,7 +45,7 @@ class FakeClass(object):
     def __init__(self, module, name):
         self.module = module
         self.name = name
-        self.__new__ = self.fake_new  # type: ignore[assignment]
+        self.__new__ = self.fake_new  # type: ignore
 
     def __repr__(self):
         return f"{self.module}.{self.name}"
@@ -57,7 +57,7 @@ class FakeClass(object):
         return FakeObject(self.module, self.name, args[1:])
 
 
-class DumpUnpickler(pickle._Unpickler):  # type: ignore[name-defined]
+class DumpUnpickler(pickle._Unpickler):  # type: ignore
     def find_class(self, module, name):
         return FakeClass(module, name)
 
@@ -68,7 +68,6 @@ class DumpUnpickler(pickle._Unpickler):  # type: ignore[name-defined]
     def dump(cls, in_stream, out_stream):
         value = cls(in_stream).load()
         pprint.pprint(value, stream=out_stream)
-        return value
 
 
 def main(argv, output_stream=None):
@@ -113,6 +112,6 @@ if __name__ == "__main__":
     # I've tested on the following versions:
     #   3.7.4
     if True:
-        pprint.PrettyPrinter._dispatch[FakeObject.__repr__] = FakeObject.pp_format  # type: ignore[attr-defined]
+        pprint.PrettyPrinter._dispatch[FakeObject.__repr__] = FakeObject.pp_format  # type: ignore
 
     sys.exit(main(sys.argv))

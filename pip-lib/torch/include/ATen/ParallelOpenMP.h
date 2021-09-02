@@ -1,4 +1,5 @@
 #pragma once
+#include <ATen/ATen.h>
 
 #include <cstddef>
 #include <exception>
@@ -20,10 +21,6 @@ inline void parallel_for(
   TORCH_CHECK(grain_size >= 0);
   at::internal::lazy_init_num_threads();
   if (begin >= end) {
-    return;
-  }
-  if (end - begin == 1) {
-    f(begin, end);
     return;
   }
 #ifdef _OPENMP

@@ -8,9 +8,9 @@ class VariableMeta(type):
 
 
 # mypy doesn't understand torch._six.with_metaclass
-class Variable(with_metaclass(VariableMeta, torch._C._LegacyVariableBase)):  # type: ignore[misc]
+class Variable(with_metaclass(VariableMeta, torch._C._LegacyVariableBase)):  # type: ignore
     pass
 
 
 from torch._C import _ImperativeEngine as ImperativeEngine
-Variable._execution_engine = ImperativeEngine()
+Variable._execution_engine = ImperativeEngine()  # type: ignore

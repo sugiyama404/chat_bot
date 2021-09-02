@@ -16,7 +16,7 @@ set(CMAKE_IMPORT_FILE_VERSION 1)
 set(_targetsDefined)
 set(_targetsNotDefined)
 set(_expectedTargets)
-foreach(_expectedTarget c10 torch_cpu torch_cpu_library torch torch_library)
+foreach(_expectedTarget c10_cuda c10 torch_cpu torch_cpu_library torch_cuda torch_cuda_library torch torch_library)
   list(APPEND _expectedTargets ${_expectedTarget})
   if(NOT TARGET ${_expectedTarget})
     list(APPEND _targetsNotDefined ${_expectedTarget})
@@ -50,6 +50,14 @@ if(_IMPORT_PREFIX STREQUAL "/")
   set(_IMPORT_PREFIX "")
 endif()
 
+# Create imported target c10_cuda
+add_library(c10_cuda SHARED IMPORTED)
+
+set_target_properties(c10_cuda PROPERTIES
+  INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include"
+  INTERFACE_LINK_LIBRARIES "c10;torch::cudart"
+)
+
 # Create imported target c10
 add_library(c10 SHARED IMPORTED)
 
@@ -76,11 +84,30 @@ set_target_properties(torch_cpu_library PROPERTIES
   INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "\$<TARGET_PROPERTY:torch_cpu,INTERFACE_SYSTEM_INCLUDE_DIRECTORIES>"
 )
 
+# Create imported target torch_cuda
+add_library(torch_cuda SHARED IMPORTED)
+
+set_target_properties(torch_cuda PROPERTIES
+  INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include"
+  INTERFACE_LINK_LIBRARIES "torch::cudart;c10_cuda;torch::nvtoolsext;torch_cpu_library;caffe2::cufft;caffe2::curand;caffe2::cublas;caffe2::cudnn"
+)
+
+# Create imported target torch_cuda_library
+add_library(torch_cuda_library INTERFACE IMPORTED)
+
+set_target_properties(torch_cuda_library PROPERTIES
+  INTERFACE_COMPILE_DEFINITIONS "\$<TARGET_PROPERTY:torch_cuda,INTERFACE_COMPILE_DEFINITIONS>"
+  INTERFACE_COMPILE_OPTIONS "\$<TARGET_PROPERTY:torch_cuda,INTERFACE_COMPILE_OPTIONS>"
+  INTERFACE_INCLUDE_DIRECTORIES "\$<TARGET_PROPERTY:torch_cuda,INTERFACE_INCLUDE_DIRECTORIES>"
+  INTERFACE_LINK_LIBRARIES "-Wl,--no-as-needed,\"\$<TARGET_FILE:torch_cuda>\" -Wl,--as-needed;\$<TARGET_PROPERTY:torch_cuda,INTERFACE_LINK_LIBRARIES>"
+  INTERFACE_SYSTEM_INCLUDE_DIRECTORIES "\$<TARGET_PROPERTY:torch_cuda,INTERFACE_SYSTEM_INCLUDE_DIRECTORIES>"
+)
+
 # Create imported target torch
 add_library(torch SHARED IMPORTED)
 
 set_target_properties(torch PROPERTIES
-  INTERFACE_LINK_LIBRARIES "torch_cpu_library"
+  INTERFACE_LINK_LIBRARIES "torch_cpu_library;torch_cuda_library"
 )
 
 # Create imported target torch_library

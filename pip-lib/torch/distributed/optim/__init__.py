@@ -6,4 +6,3 @@ optimizer can use any of the local optimizer :ref:`optimizer-algorithms` to
 apply the gradients on each worker.
 """
 from .optimizer import DistributedOptimizer
-from .zero_redundancy_optimizer import ZeroRedundancyOptimizer

@@ -262,7 +262,6 @@ inline AnyModule AnyModule::clone(optional<Device> device) const {
 
 template <typename ModuleType>
 AnyModule& AnyModule::operator=(std::shared_ptr<ModuleType> module) {
-  // NOLINTNEXTLINE(cppcoreguidelines-c-copy-assignment-signature)
   return (*this = AnyModule(std::move(module)));
 }
 

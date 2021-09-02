@@ -4,8 +4,6 @@
 #include "caffe2/utils/eigen_utils.h"
 #include "caffe2/utils/math.h"
 
-#include <c10/util/irange.h>
-
 // Bounding box utils for generate_proposals_op
 // Reference: facebookresearch/Detectron/detectron/utils/boxes.py
 
@@ -150,7 +148,7 @@ EArrXXt<typename Derived1::Scalar> bbox_transform_rotated(
     const int period = angle_bound_hi - angle_bound_lo;
     CAFFE_ENFORCE(period > 0 && period % 180 == 0);
     auto angles = pred_boxes.col(4);
-    for (const auto i : c10::irange(angles.size())) {
+    for (int i = 0; i < angles.size(); ++i) {
       if (angles[i] < angle_bound_lo) {
         angles[i] += T(period);
       } else if (angles[i] > angle_bound_hi) {

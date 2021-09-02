@@ -9,6 +9,7 @@ from scipy.special import logsumexp
 import caffe2.python.hypothesis_test_util as hu
 import hypothesis.strategies as st
 from hypothesis import given, settings
+import unittest
 
 
 class TestCRFOp(hu.HypothesisTestCase):

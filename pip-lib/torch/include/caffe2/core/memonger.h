@@ -8,17 +8,13 @@
 #include "caffe2/proto/caffe2_pb.h"
 
 namespace caffe2 {
-
-// op schema check
-TORCH_API void run_schema_check(const NetDef& net);
-
 namespace memonger {
 
-TORCH_API NetDef optimize_inference_net(
+CAFFE2_API NetDef optimize_inference_net(
     const NetDef& net,
     const std::set<string>& static_blobs);
 
-TORCH_API NetDef compute_blob_recycling_for_dag(
+CAFFE2_API NetDef compute_blob_recycling_for_dag(
     const NetDef& net,
     const std::vector<string>& heads,
     const std::vector<int>& op_indices,

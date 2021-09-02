@@ -9,15 +9,14 @@ struct C10_API Storage {
   struct use_byte_size_t {};
 
   Storage() {}
-  Storage(c10::intrusive_ptr<StorageImpl> ptr)
-      : storage_impl_(std::move(ptr)) {}
+  Storage(c10::intrusive_ptr<StorageImpl> ptr) : storage_impl_(std::move(ptr)) {}
 
   // Allocates memory buffer using given allocator and creates a storage with it
   Storage(
       use_byte_size_t use_byte_size,
       size_t size_bytes,
-      Allocator* allocator = nullptr,
-      bool resizable = false)
+      Allocator* allocator,
+      bool resizable)
       : storage_impl_(c10::make_intrusive<StorageImpl>(
             StorageImpl::use_byte_size_t(),
             size_bytes,
@@ -31,8 +30,8 @@ struct C10_API Storage {
       use_byte_size_t use_byte_size,
       size_t size_bytes,
       at::DataPtr data_ptr,
-      at::Allocator* allocator = nullptr,
-      bool resizable = false)
+      at::Allocator* allocator,
+      bool resizable)
       : storage_impl_(c10::make_intrusive<StorageImpl>(
             StorageImpl::use_byte_size_t(),
             size_bytes,
@@ -54,14 +53,10 @@ struct C10_API Storage {
   }
 
   template <typename T>
-  T* data() const {
-    return storage_impl_->data<T>();
-  }
+  T* data() const { return storage_impl_->data<T>(); }
 
   template <typename T>
-  T* unsafe_data() const {
-    return storage_impl_->unsafe_data<T>();
-  }
+  T* unsafe_data() const { return storage_impl_->unsafe_data<T>(); }
 
   // TODO: remove later
   void set_nbytes(size_t size_bytes) const {
@@ -92,11 +87,7 @@ struct C10_API Storage {
   // Returns the previous data_ptr
   at::DataPtr set_data_ptr(at::DataPtr&& data_ptr) const {
     return storage_impl_.get()->set_data_ptr(std::move(data_ptr));
-  }
-
-  void set_data_ptr_noswap(at::DataPtr&& data_ptr) const {
-    return storage_impl_.get()->set_data_ptr_noswap(std::move(data_ptr));
-  }
+  };
 
   DeviceType device_type() const {
     return storage_impl_->device_type();
@@ -139,8 +130,7 @@ struct C10_API Storage {
       size_t capacity,
       DeleterFnPtr d = nullptr) {
     if (!storage_impl_.unique()) {
-      TORCH_CHECK(
-          false,
+      AT_ERROR(
           "UniqueStorageShareExternalPointer can only be called when use_count == 1");
     }
     storage_impl_->UniqueStorageShareExternalPointer(src, capacity, d);
@@ -150,8 +140,7 @@ struct C10_API Storage {
       at::DataPtr&& data_ptr,
       size_t capacity) {
     if (!storage_impl_.unique()) {
-      TORCH_CHECK(
-          false,
+      AT_ERROR(
           "UniqueStorageShareExternalPointer can only be called when use_count == 1");
     }
     storage_impl_->UniqueStorageShareExternalPointer(

@@ -38,7 +38,7 @@ def download_from_url(url, path=None, root='.data', overwrite=False, hash_value=
     """Download file, with logic (from tensor2tensor) for Google Drive. Returns
     the path to the downloaded file.
 
-    Args:
+    Arguments:
         url: the url of the file from URL header. (None)
         root: download folder used to store the file in (.data)
         overwrite: overwrite existing files (False)
@@ -53,23 +53,16 @@ def download_from_url(url, path=None, root='.data', overwrite=False, hash_value=
         >>> '.data/validation.tar.gz'
 
     """
-    if path is not None:
-        path = os.path.abspath(path)
-    root = os.path.abspath(root)
-
     def _check_hash(path):
         if hash_value:
-            logging.info('Validating hash {} matches hash of {}'.format(hash_value, path))
             with open(path, "rb") as file_obj:
                 if not validate_file(file_obj, hash_value, hash_type):
-                    raise RuntimeError("The hash of {} does not match. Delete the file manually and retry.".format(os.path.abspath(path)))
+                    raise RuntimeError("The hash of {} does not match. Delete the file manually and retry.".format(path))
 
     def _process_response(r, root, filename):
         chunk_size = 16 * 1024
         total_size = int(r.headers.get('Content-length', 0))
         if filename is None:
-            if 'content-disposition' not in r.headers:
-                raise RuntimeError("Internal error: headers don't contain content-disposition.")
             d = r.headers['content-disposition']
             filename = re.findall("filename=\"(.+)\"", d)
             if filename is None:
@@ -98,7 +91,7 @@ def download_from_url(url, path=None, root='.data', overwrite=False, hash_value=
     if path is None:
         _, filename = os.path.split(url)
     else:
-        root, filename = os.path.split(os.path.abspath(path))
+        root, filename = os.path.split(path)
 
     if not os.path.exists(root):
         try:
@@ -130,14 +123,6 @@ def download_from_url(url, path=None, root='.data', overwrite=False, hash_value=
     for k, v in response.cookies.items():
         if k.startswith("download_warning"):
             confirm_token = v
-    if confirm_token is None:
-        if "Quota exceeded" in str(response.content):
-            raise RuntimeError(
-                "Google drive link {} is currently unavailable, because the quota was exceeded.".format(
-                    url
-                ))
-        else:
-            raise RuntimeError("Internal error: confirm_token was not found in Google drive link.")
 
     if confirm_token:
         url = url + "&confirm=" + confirm_token
@@ -151,7 +136,7 @@ def unicode_csv_reader(unicode_csv_data, **kwargs):
     Borrowed and slightly modified from the Python docs:
     https://docs.python.org/2/library/csv.html#csv-examples
 
-    Args:
+    Arguments:
         unicode_csv_data: unicode csv data (see example below)
 
     Examples:
@@ -186,7 +171,7 @@ def utf_8_encoder(unicode_csv_data):
 def extract_archive(from_path, to_path=None, overwrite=False):
     """Extract archive.
 
-    Args:
+    Arguments:
         from_path: the path of the archive.
         to_path: the root path of the extracted files (directory of from_path)
         overwrite: overwrite existing files (False)
@@ -223,7 +208,6 @@ def extract_archive(from_path, to_path=None, overwrite=False):
                         if not overwrite:
                             continue
                 tar.extract(file_, to_path)
-            logging.info('Finished extracting tar file {}.'.format(from_path))
             return files
 
     elif from_path.endswith('.zip'):
@@ -240,11 +224,9 @@ def extract_archive(from_path, to_path=None, overwrite=False):
                         continue
                 zfile.extract(file_, to_path)
         files = [f for f in files if os.path.isfile(f)]
-        logging.info('Finished extracting zip file {}.'.format(from_path))
         return files
 
     elif from_path.endswith('.gz'):
-        logging.info('Opening gz file {}.'.format(from_path))
         default_block_size = 65536
         filename = from_path[:-3]
         files = [filename]
@@ -257,7 +239,6 @@ def extract_archive(from_path, to_path=None, overwrite=False):
                 else:
                     d_file.write(block)
             d_file.write(block)
-        logging.info('Finished extracting gz file {}.'.format(from_path))
         return files
 
     else:

@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <iostream>
 #include <memory>
-#include <unordered_map>
 namespace torch {
 namespace jit {
 
@@ -15,7 +14,7 @@ struct SourceRange;
 // Source represents a code segment. It keeps track of:
 //  - text : the text of the code segment
 //  - filename (optional) : if present, represents the name of the file from
-//                          which the code segment originated.
+//                          which the code semgemnt originated.
 //  - starting_line_no : represents the line in the original file where the
 //                       code segment started.
 struct Source {
@@ -107,7 +106,7 @@ struct Source {
 
 // A SourceRange is a view into a Source, that points to a subset of the source,
 // specified by `start` and `end` byte offsets into the source text.
-struct TORCH_API SourceRange {
+struct CAFFE2_API SourceRange {
   SourceRange(std::shared_ptr<Source> source_, size_t start_, size_t end_)
       : source_(std::move(source_)), start_(start_), end_(end_) {}
   SourceRange() : source_(nullptr), start_(0), end_(0) {}
@@ -179,11 +178,6 @@ struct TORCH_API SourceRange {
   size_t end_;
 };
 
-struct TORCH_API SourceRangeHasher {
- public:
-  size_t operator()(const torch::jit::SourceRange& key) const;
-};
-
 struct StackEntry {
   std::string filename;
   SourceRange range;
@@ -207,8 +201,6 @@ struct TaggedRange {
   SourceRange range;
 };
 using SourceRangeRecords = std::vector<TaggedRange>;
-using SourceRangeTagMap =
-    std::unordered_map<SourceRange, int64_t, SourceRangeHasher>;
 
 } // namespace jit
 } // namespace torch

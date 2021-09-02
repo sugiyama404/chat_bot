@@ -3,10 +3,8 @@ import collections
 from datetime import timedelta
 import enum
 
-import torch
 import torch.distributed as dist
 
-from . import api
 from . import constants as rpc_constants
 
 
@@ -28,17 +26,15 @@ _backend_type_doc = """
 """
 
 # Create an enum type, `BackendType`, with empty members.
-# Can't handle Function Enum API (mypy bug #9079)
-BackendType = enum.Enum(value="BackendType", names=dict())  # type: ignore[misc]
-# Unable to assign a function a method (mypy bug #2427)
-BackendType.__repr__ = _backend_type_repr  # type: ignore[assignment]
+BackendType = enum.Enum(value="BackendType", names={})
+BackendType.__repr__ = _backend_type_repr
 BackendType.__doc__ = _backend_type_doc
 
 def backend_registered(backend_name):
     """
     Checks if backend_name is registered as an RPC backend.
 
-    Args:
+    Arguments:
         backend_name (str): string to identify the RPC backend.
     Returns:
         True if the backend has been registered with ``register_backend``, else
@@ -52,7 +48,7 @@ def register_backend(
 ):
     """Registers a new RPC backend.
 
-    Args:
+    Arguments:
         backend_name (str): backend string to identify the handler.
         construct_rpc_backend_options_handler (function):
             Handler that is invoked when
@@ -75,10 +71,8 @@ def register_backend(
         },
         **existing_enum_dict
     )
-    # Can't handle Function Enum API (mypy bug #9079)
-    BackendType = enum.Enum(value="BackendType", names=extended_enum_dict)  # type: ignore[misc]
-    # Unable to assign a function a method (mypy bug #2427)
-    BackendType.__repr__ = _backend_type_repr  # type: ignore[assignment]
+    BackendType = enum.Enum(value="BackendType", names=extended_enum_dict)
+    BackendType.__repr__ = _backend_type_repr
     BackendType.__doc__ = _backend_type_doc
     return BackendType[backend_name]
 
@@ -157,7 +151,6 @@ def _process_group_init_backend_handler(
 
     # TODO: add try-except and destroy _agent in all processes if any fails.
     return ProcessGroupAgent(
-        store,
         name,
         group,
         rpc_backend_options.num_send_recv_threads,
@@ -190,83 +183,6 @@ def _tensorpipe_construct_rpc_backend_options_handler(
     )
 
 
-def _tensorpipe_check_local_device_maps(name, options):
-    # Check local devices in device_maps and devices are all valid.
-    local_devices = set(options.devices) if options.devices else set()
-    device_maps = options.device_maps
-    for worker_name in device_maps:
-        device_map = device_maps[worker_name]
-        key_set = set(device_map.keys())
-        val_set = set(device_map.values())
-        if not all([
-            len(key_set) == len(device_map),
-            len(val_set) == len(device_map),
-        ]):
-            raise ValueError(
-                f"Invalid device_map configuration for {worker_name}, "
-                f"not 1-to-1 mapping:\ndevice_maps = {device_map}"
-            )
-        local_devices.update(key_set)
-
-    if not all(
-        (0 <= d.index < torch.cuda.device_count() if d.type == "cuda" else True)
-        for d in local_devices
-    ):
-        raise ValueError(
-            f"Invalid device in TensorPipe options on {name}:\n"
-            f"device_maps = {options.device_maps},\n"
-            f"devices = {options.devices}"
-        )
-
-
-# detect if any worker has invalid device_map configurations, and return
-# names of failed workers
-def _tensorpipe_check_remote_device_maps(agent, options):
-    device_maps = options.device_maps
-    if device_maps is None:
-        device_maps = {}
-
-    def check_one_worker(name, device_maps, all_device_counts):
-        device_count = all_device_counts[name]
-        wrong_worker_names = set(device_maps) - set(all_device_counts)
-        if wrong_worker_names:
-            raise ValueError(f"Wrong worker names: {wrong_worker_names}")
-        for remote_name in all_device_counts:
-            remote_device_count = all_device_counts[remote_name]
-            if remote_name in device_maps:
-                device_map = device_maps[remote_name]
-                val_set = set(device_map.values())
-                if not all(
-                    (0 <= d.index < remote_device_count if d.type == "cuda" else True)
-                    for d in val_set
-                ):
-                    raise ValueError(
-                        f"Invalid device_map configuration on {name} "
-                        f"for {remote_name}, remote device out of range:\n"
-                        f"device_maps = {device_maps}"
-                    )
-
-    gathered = api._all_gather([torch.cuda.device_count(), device_maps])
-    all_device_counts = {name: gathered[name][0] for name in gathered}
-    all_device_maps = {name: gathered[name][1] for name in gathered}
-    for worker_name in all_device_maps:
-        worker_device_maps = all_device_maps[worker_name]
-        check_one_worker(worker_name, worker_device_maps, all_device_counts)
-
-    # passed all checked, construct reverse mapping for return values
-    reverse_device_maps = {}
-    local_name = api.get_worker_info().name
-    for worker_name in all_device_maps:
-        remote_device_maps = all_device_maps[worker_name]
-        if local_name in remote_device_maps:
-            remote_device_map = remote_device_maps[local_name]
-            reverse_device_maps[worker_name] = {
-                remote_device_map[k]: k for k in remote_device_map
-            }
-
-    agent._set_reverse_device_maps(reverse_device_maps)
-
-
 def _tensorpipe_init_backend_handler(store, name, rank, world_size, rpc_backend_options):
     from . import TensorPipeRpcBackendOptions
     from . import TensorPipeAgent
@@ -283,22 +199,6 @@ def _tensorpipe_init_backend_handler(store, name, rank, world_size, rpc_backend_
             )
         )
 
-    if torch.cuda.is_available():
-        # It's necessary to initialize PyTorch CUDA states here (e.g.,
-        # CUDACachingAllocator). If this is missing, we could hit errors like
-        # "allocator not initialized", because other processes might send
-        # CUDA-related RPC request to this process before user code in this
-        # process initializes its PyTorch CUDA states.
-        torch.cuda.init()
-
-        _tensorpipe_check_local_device_maps(name, rpc_backend_options)
-    else:
-        if len(rpc_backend_options.devices) > 0:
-            raise ValueError(
-                f"CUDA is not available on {name}, but "
-                f"devices = {rpc_backend_options.devices}"
-            )
-
     # The agent's join method is required to behave like a barrier and perform
     # collective operations, for which it relies on a process group, instead of
     # re-implementing this on top of RPCs.
@@ -306,20 +206,9 @@ def _tensorpipe_init_backend_handler(store, name, rank, world_size, rpc_backend_
     group = _init_process_group(store, rank, world_size)
 
     # TODO: add try-except and destroy _agent in all processes if any fails.
-    agent = TensorPipeAgent(
+    return TensorPipeAgent(
         store, name, rank, world_size, group, rpc_backend_options
     )
-
-    api._init_rpc_states(agent)
-
-    try:
-        _tensorpipe_check_remote_device_maps(agent, rpc_backend_options)
-        agent.join()
-    except Exception:
-        api.shutdown()
-        raise
-
-    return agent
 
 
 register_backend(

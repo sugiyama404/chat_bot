@@ -6,9 +6,9 @@
 # library version information
 
 set(CAFFE2_VERSION_MAJOR 1)
-set(CAFFE2_VERSION_MINOR 9)
-set(CAFFE2_VERSION_PATCH 0)
-set(CAFFE2_VERSION "1.9.0")
+set(CAFFE2_VERSION_MINOR 7)
+set(CAFFE2_VERSION_PATCH 1)
+set(CAFFE2_VERSION "1.7.1")
 
 # Utils functions.
 include("${CMAKE_CURRENT_LIST_DIR}/public/utils.cmake")
@@ -78,27 +78,27 @@ else()
   endif()
 endif()
 
-if(0)
+if(ON)
   # The file public/cuda.cmake exclusively uses CAFFE2_USE_*.
   # If Caffe2 was compiled with the libraries below, they must
   # be found again when including the Caffe2 target.
-  set(CAFFE2_USE_CUDA 0)
-  set(CAFFE2_USE_CUDNN OFF)
+  set(CAFFE2_USE_CUDA ON)
+  set(CAFFE2_USE_CUDNN ON)
   set(CAFFE2_USE_TENSORRT OFF)
   include("${CMAKE_CURRENT_LIST_DIR}/public/cuda.cmake")
-  if( AND NOT CAFFE2_USE_CUDA)
+  if(ON AND NOT CAFFE2_USE_CUDA)
     message(FATAL_ERROR
       "Your installed Caffe2 version uses CUDA but I cannot find the CUDA "
       "libraries. Please set the proper CUDA prefixes and / or install "
       "CUDA.")
   endif()
-  if( AND NOT CAFFE2_USE_CUDNN)
+  if(ON AND NOT CAFFE2_USE_CUDNN)
     message(FATAL_ERROR
       "Your installed Caffe2 version uses cuDNN but I cannot find the cuDNN "
       "libraries. Please set the proper cuDNN prefixes and / or install "
       "cuDNN.")
   endif()
-  if( AND NOT CAFFE2_USE_TENSORRT)
+  if(OFF AND NOT CAFFE2_USE_TENSORRT)
     message(FATAL_ERROR
       "Your installed Caffe2 version uses TensorRT but I cannot find the TensorRT "
       "libraries. Please set the proper TensorRT prefixes and / or install "

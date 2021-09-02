@@ -23,7 +23,7 @@ def register_after_fork(func):
         ``multiprocessing`` module. In python >= 3.7 it also works with
         ``os.fork()``.
 
-    Args:
+    Arguments:
         func (function): Function taking no arguments to be called in the child after fork
 
     """

@@ -6,6 +6,7 @@
 import argparse
 import copy
 import json
+import os.path
 
 import numpy as np
 

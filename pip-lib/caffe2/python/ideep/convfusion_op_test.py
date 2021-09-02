@@ -5,7 +5,8 @@
 
 import unittest
 import hypothesis.strategies as st
-from hypothesis import given
+from hypothesis import given, settings
+import copy
 import numpy as np
 import math
 from caffe2.proto import caffe2_pb2

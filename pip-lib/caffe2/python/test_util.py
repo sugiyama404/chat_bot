@@ -7,13 +7,8 @@
 import numpy as np
 from caffe2.python import core, workspace
 
-import os
-import pathlib
-import shutil
-import tempfile
 import unittest
-from typing import Any, Callable, Tuple, Type
-from types import TracebackType
+import os
 
 
 def rand_array(*dims):
@@ -96,20 +91,3 @@ class TestCase(unittest.TestCase):
 
     def tearDown(self):
         workspace.ResetWorkspace()
-
-    def make_tempdir(self) -> pathlib.Path:
-        tmp_folder = pathlib.Path(tempfile.mkdtemp(prefix="caffe2_test."))
-        self.addCleanup(self._remove_tempdir, tmp_folder)
-        return tmp_folder
-
-    def _remove_tempdir(self, path: pathlib.Path) -> None:
-        def _onerror(
-            fn: Callable[..., Any],
-            path: str,
-            exc_info: Tuple[Type[BaseException], BaseException, TracebackType],
-        ) -> None:
-            # Ignore FileNotFoundError, but re-raise anything else
-            if not isinstance(exc_info[1], FileNotFoundError):
-                raise exc_info[1].with_traceback(exc_info[2])
-
-        shutil.rmtree(str(path), onerror=_onerror)

@@ -38,6 +38,7 @@ import threading
 import atexit
 import time
 import collections
+import six
 import traceback
 
 from abc import ABCMeta, abstractmethod
@@ -109,7 +110,7 @@ class Metrics(object):
 
 
 class State():
-    __metaclass__ = ABCMeta
+    six.add_metaclass(ABCMeta)
 
     @abstractmethod
     def start(self):

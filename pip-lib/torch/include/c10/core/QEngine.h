@@ -31,7 +31,9 @@ inline std::string toString(QEngine qengine) {
       return "QNNPACK";
     default:
       TORCH_CHECK(
-          false, "Unrecognized Quantized Engine: ", static_cast<int>(qengine));
+          false,
+          "Unrecognized Quantized Engine: ",
+          static_cast<int>(qengine));
   }
 }
 

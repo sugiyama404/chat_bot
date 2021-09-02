@@ -80,12 +80,6 @@ namespace jit {
   _(TK_TIMES_EQ, "*=", "*=")                     \
   _(TK_DIV_EQ, "/=", "/=")                       \
   _(TK_MOD_EQ, "%=", "%=")                       \
-  _(TK_BIT_OR_EQ, "|=", "|=")                    \
-  _(TK_BIT_AND_EQ, "&=", "&=")                   \
-  _(TK_BIT_XOR_EQ, "^=", "^=")                   \
-  _(TK_LSHIFT_EQ, "<<=", "<<=")                  \
-  _(TK_RSHIFT_EQ, ">>=", ">>=")                  \
-  _(TK_POW_EQ, "**=", "**=")                     \
   _(TK_GLOBAL, "global", "global")               \
   _(TK_BUILT_IN, "built-in", "")                 \
   _(TK_SUBSCRIPT, "subscript", "")               \
@@ -108,7 +102,6 @@ namespace jit {
   _(TK_ASSERT, "assert", "assert")               \
   _(TK_DOTS, "dots", "...")                      \
   _(TK_LIST_COMP, "list comprehension", "")      \
-  _(TK_DICT_COMP, "dict comprehension", "")      \
   _(TK_BREAK, "break", "break")                  \
   _(TK_CONTINUE, "continue", "continue")         \
   _(TK_DELETE, "del", "del")                     \
@@ -119,8 +112,7 @@ namespace jit {
   _(TK_WITH_ITEM, "withitem", "")                \
   _(TK_AS, "as", "as")                           \
   _(TK_PROP, "property", "")                     \
-  _(TK_ELLIPSIS, "Ellipsis", "Ellipsis")         \
-  _(TK_NONE_TYPE, "NoneType", "NoneType")
+  _(TK_ELLIPSIS, "Ellipsis", "Ellipsis")
 
 enum TokenKind {
   // we use characters to represent themselves so skip all valid characters
@@ -132,8 +124,8 @@ enum TokenKind {
 #undef DEFINE_TOKEN
 };
 
-TORCH_API std::string kindToString(int kind);
-TORCH_API int stringToKind(const std::string& str);
+CAFFE2_API std::string kindToString(int kind);
+CAFFE2_API int stringToKind(const std::string& str);
 
 // nested hash tables that indicate char-by-char what is a valid token.
 struct TokenTrie;
@@ -166,7 +158,7 @@ struct TokenTrie {
 
 // stuff that is shared against all TC lexers/parsers and is initialized only
 // once.
-struct TORCH_API SharedParserData {
+struct CAFFE2_API SharedParserData {
   SharedParserData() : head(new TokenTrie()) {
     std::stringstream ss;
     for (const char* c = valid_single_char_tokens; *c; c++) {
@@ -194,15 +186,9 @@ struct TORCH_API SharedParserData {
     if (first == '-' || first == '+' || isalpha(first))
       return false;
     const char* startptr = str.c_str() + start;
-    // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
     char* endptr;
     torch::jit::strtod_c(startptr, &endptr);
     *len = endptr - startptr;
-    // check if the number is complex valued
-    // access is safe because string is assumed to be null terminated
-    if (endptr != nullptr && *endptr == 'j') {
-      *len += 1;
-    }
     return *len > 0;
   }
 
@@ -376,7 +362,7 @@ struct TORCH_API SharedParserData {
   TokenTrieRef head;
 };
 
-TORCH_API SharedParserData& sharedParserData();
+CAFFE2_API SharedParserData& sharedParserData();
 
 struct Token {
   int kind;
@@ -391,8 +377,8 @@ struct Token {
 };
 
 struct Lexer {
-  explicit Lexer(std::shared_ptr<Source> source)
-      : source(std::move(source)),
+  explicit Lexer(const std::shared_ptr<Source>& source)
+      : source(source),
         pos(0),
         nesting(0),
         indent_stack(),
@@ -475,7 +461,6 @@ struct Lexer {
       case TK_WHITESPACE:
       case TK_WHITESPACE_EOF: {
         int depth =
-            // NOLINTNEXTLINE(cppcoreguidelines-narrowing-conversions,bugprone-narrowing-conversions)
             r.kind == TK_WHITESPACE_EOF ? indent_stack.front() : r.range.size();
         // note: TK_WHITESPACE_EOF is whitespace right before the EOF token
         // just like we allow the code to be indented to a particular initial
@@ -507,11 +492,8 @@ struct Lexer {
     next_tokens.push_back(std::move(r));
   }
   Token lexRaw(bool whitespace_token = false) {
-    // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
     int kind;
-    // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
     size_t start;
-    // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
     size_t length;
     AT_ASSERT(source);
     if (!shared.match(

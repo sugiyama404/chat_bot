@@ -21,8 +21,7 @@ private:
   __m256 values;
 public:
   using value_type = float;
-  using size_type = int;
-  static constexpr size_type size() {
+  static constexpr int size() {
     return 8;
   }
   Vec256() {}
@@ -103,9 +102,6 @@ public:
     __m256 cmp = _mm256_cmp_ps(values, _mm256_set1_ps(0.0f), _CMP_EQ_OQ);
     return _mm256_movemask_ps(cmp);
   }
-  Vec256<float> isnan() const {
-    return _mm256_cmp_ps(values, _mm256_set1_ps(0.0f), _CMP_UNORD_Q);
-  }
   Vec256<float> map(float (*f)(float)) const {
     __at_align32__ float tmp[size()];
     store(tmp);
@@ -119,16 +115,7 @@ public:
     return _mm256_andnot_ps(mask, values);
   }
   Vec256<float> angle() const {
-    const auto zero_vec = _mm256_set1_ps(0.f);
-    const auto nan_vec = _mm256_set1_ps(NAN);
-    const auto not_nan_mask = _mm256_cmp_ps(values, values, _CMP_EQ_OQ);
-    const auto nan_mask = _mm256_cmp_ps(not_nan_mask, zero_vec, _CMP_EQ_OQ);
-    const auto pi = _mm256_set1_ps(c10::pi<float>);
-
-    const auto neg_mask = _mm256_cmp_ps(values, zero_vec, _CMP_LT_OQ);
-    auto angle = _mm256_blendv_ps(zero_vec, pi, neg_mask);
-    angle = _mm256_blendv_ps(angle, nan_vec, nan_mask);
-    return angle;
+    return _mm256_set1_ps(0);
   }
   Vec256<float> real() const {
     return *this;
@@ -150,9 +137,6 @@ public:
   }
   Vec256<float> atan2(const Vec256<float> &b) const {
     return Vec256<float>(Sleef_atan2f8_u10(values, b));
-  }
-  Vec256<float> copysign(const Vec256<float> &sign) const {
-    return Vec256<float>(Sleef_copysignf8(values, sign));
   }
   Vec256<float> erf() const {
     return Vec256<float>(Sleef_erff8_u10(values));
@@ -209,29 +193,6 @@ public:
   Vec256<float> i0() const {
     return map(calc_i0);
   }
-  Vec256<float> i0e() const {
-    return map(calc_i0e);
-  }
-  Vec256<float> igamma(const Vec256<float> &x) const {
-    __at_align32__ float tmp[size()];
-    __at_align32__ float tmp_x[size()];
-    store(tmp);
-    x.store(tmp_x);
-    for (int64_t i = 0; i < size(); i++) {
-      tmp[i] = calc_igamma(tmp[i], tmp_x[i]);
-    }
-    return loadu(tmp);
-  }
-  Vec256<float> igammac(const Vec256<float> &x) const {
-    __at_align32__ float tmp[size()];
-    __at_align32__ float tmp_x[size()];
-    store(tmp);
-    x.store(tmp_x);
-    for (int64_t i = 0; i < size(); i++) {
-      tmp[i] = calc_igammac(tmp[i], tmp_x[i]);
-    }
-    return loadu(tmp);
-  }
   Vec256<float> neg() const {
     return _mm256_xor_ps(_mm256_set1_ps(-0.f), values);
   }
@@ -273,7 +234,7 @@ public:
   }
 
   Vec256<float> operator!=(const Vec256<float>& other) const {
-    return _mm256_cmp_ps(values, other.values, _CMP_NEQ_UQ);
+    return _mm256_cmp_ps(values, other.values, _CMP_NEQ_OQ);
   }
 
   Vec256<float> operator<(const Vec256<float>& other) const {

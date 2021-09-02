@@ -356,11 +356,9 @@ template <typename Op,
           typename scalar2,
           typename IndexType,
           int ADims, int BDims,
-          int step,
-          int max_threads_per_block=AT_APPLY_THREADS_PER_BLOCK,
-          int min_blocks_per_sm=AT_APPLY_BLOCKS_PER_SM>
+          int step>
 #if __CUDA_ARCH__ >= 350 || defined __HIP_PLATFORM_HCC__
-C10_LAUNCH_BOUNDS_2(max_threads_per_block, min_blocks_per_sm)
+C10_LAUNCH_BOUNDS_2(AT_APPLY_THREADS_PER_BLOCK, AT_APPLY_BLOCKS_PER_SM)
 #endif
 __global__ void
 kernelPointwiseApply2(detail::TensorInfo<scalar1, IndexType> a,
@@ -398,21 +396,11 @@ inline bool getApplyGrid(uint64_t totalElements, dim3& grid, int64_t curDevice) 
   return true;
 }
 
-constexpr int getApplyBlocksPerSM() {
-  return AT_APPLY_BLOCKS_PER_SM;
-}
-
-constexpr int getApplyBlockSize() {
-  return AT_APPLY_THREADS_PER_BLOCK;
-}
-
 inline dim3 getApplyBlock() {
   return dim3(AT_APPLY_THREADS_PER_BLOCK);
 }
 
-template <typename scalar1, typename scalar2, int step, typename Op,
-          int max_threads_per_block=AT_APPLY_THREADS_PER_BLOCK,
-          int min_blocks_per_sm=AT_APPLY_BLOCKS_PER_SM>
+template <typename scalar1, typename scalar2, int step, typename Op>
 inline bool CUDA_tensor_apply2(at::Tensor a,
                                at::Tensor b,
                                const Op op,
@@ -475,12 +463,9 @@ inline bool CUDA_tensor_apply2(at::Tensor a,
   kernelPointwiseApply2<Op,                                            \
                         scalar1,                                       \
                         scalar2,                                       \
-                        TYPE, A, B, step,                              \
-                        max_threads_per_block,                         \
-                        min_blocks_per_sm>                             \
+                        TYPE, A, B, step>                              \
    <<<grid, block, 0, at::cuda::getCurrentCUDAStream(curDevice)>>>(    \
-       aInfo, bInfo, static_cast<TYPE>(totalElements), op);            \
-  C10_CUDA_KERNEL_LAUNCH_CHECK();
+       aInfo, bInfo, static_cast<TYPE>(totalElements), op);
 
 #define HANDLE_B_CASE(TYPE, A, B) {         \
   switch (B) {                              \
@@ -564,16 +549,13 @@ inline bool CUDA_tensor_apply2(at::Tensor a,
 }
 
 /* Provides default step = 1 to CUDA_tensor_apply2. */
-template <typename scalar1, typename scalar2, typename Op,
-          int max_threads_per_block=AT_APPLY_THREADS_PER_BLOCK,
-          int min_blocks_per_sm=AT_APPLY_BLOCKS_PER_SM>
+template <typename scalar1, typename scalar2, typename Op>
 inline bool CUDA_tensor_apply2(at::Tensor a,
                                at::Tensor b,
                                const Op op,
                                TensorArgType aType = TensorArgType::ReadWrite,
                                TensorArgType bType = TensorArgType::ReadOnly) {
-  return CUDA_tensor_apply2<scalar1, scalar2, 1, Op,
-                            max_threads_per_block, min_blocks_per_sm>(a, b, op, aType, bType);
+  return CUDA_tensor_apply2<scalar1, scalar2, 1, Op>(a, b, op, aType, bType);
 }
 
 } // cuda

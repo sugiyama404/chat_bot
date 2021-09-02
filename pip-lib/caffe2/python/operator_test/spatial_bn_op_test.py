@@ -3,6 +3,7 @@
 
 
 
+from caffe2.proto import caffe2_pb2
 from caffe2.python import brew, core, utils, workspace
 import caffe2.python.hip_test_util as hiputl
 import caffe2.python.hypothesis_test_util as hu
@@ -404,7 +405,7 @@ class TestSpatialBN(serial.SerializedTestCase):
            in_place=st.booleans(),
            engine=st.sampled_from(["", "CUDNN"]),
            **hu.gcs)
-    @settings(deadline=None)
+    @settings(deadline=1000)
     def test_spatial_bn_multi_batch_grad(
             self, N, C, H, W, epsilon, order, num_batches, in_place, engine,
             gc, dc):

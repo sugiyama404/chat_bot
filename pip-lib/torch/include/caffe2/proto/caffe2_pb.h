@@ -15,8 +15,9 @@ constexpr DeviceType IDEEP = DeviceType::IDEEP;
 constexpr DeviceType HIP = DeviceType::HIP;
 constexpr DeviceType COMPILE_TIME_MAX_DEVICE_TYPES =
     DeviceType::COMPILE_TIME_MAX_DEVICE_TYPES;
+constexpr DeviceType ONLY_FOR_TEST = DeviceType::ONLY_FOR_TEST;
 
-inline TORCH_API DeviceType ProtoToType(const caffe2::DeviceTypeProto p) {
+inline CAFFE2_API DeviceType ProtoToType(const caffe2::DeviceTypeProto p) {
   switch (p) {
     case caffe2::PROTO_CPU:
       return DeviceType::CPU;
@@ -34,6 +35,8 @@ inline TORCH_API DeviceType ProtoToType(const caffe2::DeviceTypeProto p) {
       return DeviceType::HIP;
     case caffe2::PROTO_COMPILE_TIME_MAX_DEVICE_TYPES:
       return DeviceType::COMPILE_TIME_MAX_DEVICE_TYPES;
+    case caffe2::PROTO_ONLY_FOR_TEST:
+      return DeviceType::ONLY_FOR_TEST;
     default:
       AT_ERROR(
           "Unknown device:",
@@ -44,11 +47,11 @@ inline TORCH_API DeviceType ProtoToType(const caffe2::DeviceTypeProto p) {
   }
 }
 
-inline TORCH_API DeviceType ProtoToType(int p) {
+inline CAFFE2_API DeviceType ProtoToType(int p) {
   return ProtoToType(static_cast<caffe2::DeviceTypeProto>(p));
 }
 
-inline TORCH_API DeviceTypeProto TypeToProto(const DeviceType& t) {
+inline CAFFE2_API DeviceTypeProto TypeToProto(const DeviceType& t) {
   switch (t) {
     case DeviceType::CPU:
       return caffe2::PROTO_CPU;
@@ -66,6 +69,8 @@ inline TORCH_API DeviceTypeProto TypeToProto(const DeviceType& t) {
       return caffe2::PROTO_HIP;
     case DeviceType::COMPILE_TIME_MAX_DEVICE_TYPES:
       return caffe2::PROTO_COMPILE_TIME_MAX_DEVICE_TYPES;
+    case DeviceType::ONLY_FOR_TEST:
+      return caffe2::PROTO_ONLY_FOR_TEST;
     default:
       AT_ERROR(
           "Unknown device:",
@@ -76,7 +81,7 @@ inline TORCH_API DeviceTypeProto TypeToProto(const DeviceType& t) {
   }
 }
 
-inline TORCH_API caffe2::DeviceOption DeviceToOption(
+inline CAFFE2_API caffe2::DeviceOption DeviceToOption(
     const at::Device& device) {
   caffe2::DeviceOption option;
   auto type = device.type();
@@ -97,6 +102,7 @@ inline TORCH_API caffe2::DeviceOption DeviceToOption(
     case DeviceType::MKLDNN:
     case DeviceType::IDEEP:
     case DeviceType::COMPILE_TIME_MAX_DEVICE_TYPES:
+    case DeviceType::ONLY_FOR_TEST:
       break;
     default:
       AT_ERROR(
@@ -109,7 +115,7 @@ inline TORCH_API caffe2::DeviceOption DeviceToOption(
   return option;
 }
 
-inline TORCH_API at::Device OptionToDevice(const caffe2::DeviceOption option) {
+inline CAFFE2_API at::Device OptionToDevice(const caffe2::DeviceOption option) {
   auto type = option.device_type();
   int32_t id = -1;
   switch (type) {

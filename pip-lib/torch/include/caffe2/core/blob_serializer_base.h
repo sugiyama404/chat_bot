@@ -11,11 +11,8 @@ namespace caffe2 {
 
 class Blob;
 
-// Constants for use in the BlobSerializationOptions chunk_size field.
-// These should ideally be defined in caffe2.proto so they can be exposed across
-// languages, but protobuf does not appear to allow defining constants.
-constexpr int kDefaultChunkSize = 0;
-constexpr int kNoChunking = -1;
+constexpr int kDefaultChunkSize = -1;
+constexpr int kNoChunking = 0;
 
 /**
  * @brief BlobSerializerBase is an abstract class that serializes a blob to a
@@ -52,12 +49,12 @@ class BlobSerializerBase {
       const std::string& name,
       SerializationAcceptor acceptor) = 0;
 
-  virtual void SerializeWithOptions(
+  virtual void SerializeWithChunkSize(
       const void* pointer,
       TypeMeta typeMeta,
       const std::string& name,
       SerializationAcceptor acceptor,
-      const BlobSerializationOptions& /*options*/) {
+      int /*chunk_size*/) {
     // Base implementation.
     Serialize(pointer, typeMeta, name, acceptor);
   }
@@ -81,7 +78,7 @@ inline unique_ptr<BlobSerializerBase> CreateSerializer(TypeIdentifier id) {
  * @brief BlobDeserializerBase is an abstract class that deserializes a blob
  * from a BlobProto or a TensorProto.
  */
-class TORCH_API BlobDeserializerBase {
+class CAFFE2_API BlobDeserializerBase {
  public:
   virtual ~BlobDeserializerBase() {}
 

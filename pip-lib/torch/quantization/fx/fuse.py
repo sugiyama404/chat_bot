@@ -1,52 +1,33 @@
-from typing import Dict, Any
-
-from torch.fx import (
-    GraphModule,
-    Node,
-    map_arg
+from torch._fx import (
+    GraphModule
 )
 
-from torch.fx.graph import Graph
-
-from ..utils import (
-    get_combined_dict
+from torch._fx.graph import (
+    Graph,
+    map_arg,
 )
 
 from .pattern_utils import (
     is_match,
-    get_default_fusion_patterns,
+    get_fusion_patterns,
 )
 
-from .graph_module import (
-    FusedGraphModule
-)
+from .fusion_patterns import *  # noqa: F401
 
-from .fusion_patterns import *  # noqa: F401,F403
-
-from .quantization_types import Pattern
-
-from typing import Callable, Tuple
-
-
+import copy
 class Fuser:
-    def fuse(self, model: GraphModule,
-             fuse_custom_config_dict: Dict[str, Any] = None) -> GraphModule:
-        if fuse_custom_config_dict is None:
-            fuse_custom_config_dict = {}
-
+    def fuse(self, model, inplace=False):
+        if not inplace:
+            model = copy.deepcopy(model)
         input_root = model
         input_graph = model.graph
         self.modules = dict(input_root.named_modules())
 
-        additional_fusion_patterns = \
-            fuse_custom_config_dict.get("additional_fusion_pattern", {})
-        fusion_patterns = get_combined_dict(
-            get_default_fusion_patterns(), additional_fusion_patterns)
+        fusion_patterns = get_fusion_patterns()
         # find fusion
-        fusion_pairs = self._find_matches(
-            input_root, input_graph, fusion_patterns)
+        fusion_pairs = self._find_matches(input_root, input_graph, fusion_patterns)
         self.fused_graph = Graph()
-        env: Dict[Any, Any] = {}
+        env = {}
 
         def load_arg(a):
             return map_arg(a, lambda node: env[node.name])
@@ -54,22 +35,18 @@ class Fuser:
         for node in input_graph.nodes:
             root_node, obj = fusion_pairs.get(node.name, (None, None))
             if root_node is node:
-                assert obj is not None
                 env[node.name] = obj.fuse(self, load_arg)
             elif root_node is None:
                 env[node.name] = self.fused_graph.node_copy(node, load_arg)
             # node matched in patterns and is not root is removed here
 
-        preserved_attributes = set(fuse_custom_config_dict.get("preserved_attributes", []))
-        model = FusedGraphModule(input_root, self.fused_graph, preserved_attributes)
+        self.fused_graph.output(load_arg(input_graph.result))
+        model = GraphModule(input_root, self.fused_graph)
         return model
 
-    def _find_matches(
-            self, root: GraphModule, graph: Graph,
-            patterns: Dict[Pattern, Callable]
-    ) -> Dict[str, Tuple[Node, FuseHandler]]:
+    def _find_matches(self, root, graph, patterns):
         modules = dict(root.named_modules())
-        match_map : Dict[str, Tuple[Node, FuseHandler]] = {}  # node name -> (root_node, match_value)
+        match_map = {}  # node name -> (root_node, match_value?)
 
         def apply_match(pattern, node, match):
             if isinstance(pattern, tuple):

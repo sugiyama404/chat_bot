@@ -57,15 +57,12 @@ inline Tensor grid_sample(
     GridSampleFuncOptions::mode_t mode,
     GridSampleFuncOptions::padding_mode_t padding_mode,
     c10::optional<bool> align_corners) {
-  // NOLINTNEXTLINE(cppcoreguidelines-init-variables)
   int64_t mode_enum, padding_mode_enum;
 
   if (c10::get_if<enumtype::kBilinear>(&mode)) {
     mode_enum = 0;
-  } else if (c10::get_if<enumtype::kNearest>(&mode)) {
+  } else { /// mode == 'nearest'
     mode_enum = 1;
-  } else { /// mode == 'bicubic'
-    mode_enum = 2;
   }
 
   if (c10::get_if<enumtype::kZeros>(&padding_mode)) {

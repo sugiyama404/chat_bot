@@ -1,7 +1,6 @@
 #pragma once
 
 #include <ATen/core/ivalue.h>
-#include <c10/util/ArrayRef.h>
 #include <caffe2/serialize/inline_container.h>
 #include <torch/csrc/WindowsTorchApiMacro.h>
 #include <torch/csrc/jit/serialization/pickler.h>
@@ -69,7 +68,7 @@ TORCH_API IValue pickle_load(const std::vector<char>& data);
 TORCH_API IValue unpickle(
     std::function<size_t(char*, size_t)> reader,
     TypeResolver type_resolver,
-    c10::ArrayRef<at::Tensor> tensor_table);
+    const std::vector<at::Tensor>* tensor_table);
 
 /// Decode a chunk of memory containing pickled data into its `torch::IValue`s.
 ///
@@ -81,7 +80,7 @@ TORCH_API IValue unpickle(
     const char* data,
     size_t size,
     TypeResolver type_resolver = nullptr,
-    c10::ArrayRef<at::Tensor> tensor_table = {});
+    const std::vector<at::Tensor>* tensor_table = nullptr);
 
 } // namespace jit
 } // namespace torch

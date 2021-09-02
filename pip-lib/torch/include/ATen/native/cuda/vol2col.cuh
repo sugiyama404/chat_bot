@@ -129,7 +129,7 @@ void vol2col(
       height_col,
       width_col,
       data_col);
-  C10_CUDA_KERNEL_LAUNCH_CHECK();
+  AT_CUDA_CHECK(cudaGetLastError());
 }
 
 template <typename T, typename accT>
@@ -264,7 +264,7 @@ void col2vol(
           output_height,
           output_width,
           data_vol);
-  C10_CUDA_KERNEL_LAUNCH_CHECK();
+  AT_CUDA_CHECK(cudaGetLastError());
 }
 
 } // namespace native

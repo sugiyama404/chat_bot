@@ -13,7 +13,8 @@ from caffe2.python.modifier_context import (
 DEFAULT_OPTIM = 'DEFAULT'
 
 
-class OptimizerContext(ModifierContext, context.DefaultManaged):
+@context.define_context(allow_default=True)
+class OptimizerContext(ModifierContext):
     """
     provide context to allow param_info to have different optimizers
     """

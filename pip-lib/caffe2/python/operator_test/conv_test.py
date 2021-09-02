@@ -2,6 +2,7 @@
 
 import collections
 import functools
+import os
 import unittest
 
 import caffe2.python._import_c_extension as C

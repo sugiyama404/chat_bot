@@ -35,7 +35,6 @@ def fuse_conv_bn_jit(model, inplace=False):
     Args:
         model: TorchScript model from scripting or tracing
     """
-    torch._C._log_api_usage_once("quantization_api.quantize_jit.fuse_conv_bn_jit")
     model_c = model._c
     model_c = torch._C._jit_pass_fold_convbn(model_c)
     if inplace:
@@ -63,11 +62,9 @@ def _prepare_jit(model, qconfig_dict, inplace=False, quant_type=QuantType.STATIC
     return model
 
 def prepare_jit(model, qconfig_dict, inplace=False):
-    torch._C._log_api_usage_once("quantization_api.quantize_jit.prepare_jit")
     return _prepare_jit(model, qconfig_dict, inplace, quant_type=QuantType.STATIC)
 
 def prepare_dynamic_jit(model, qconfig_dict, inplace=False):
-    torch._C._log_api_usage_once("quantization_api.quantize_jit.prepare_dynamic_jit")
     return _prepare_jit(model, qconfig_dict, inplace, quant_type=QuantType.DYNAMIC)
 
 def _convert_jit(model, inplace=False, debug=False, quant_type=QuantType.STATIC,
@@ -87,16 +84,12 @@ def _convert_jit(model, inplace=False, debug=False, quant_type=QuantType.STATIC,
         model._reconstruct(model_c)
     else:
         model = wrap_cpp_module(model_c)
-    torch._C._jit_pass_constant_propagation(model.graph)
-    torch._C._jit_pass_dce(model.graph)
     return model
 
 def convert_jit(model, inplace=False, debug=False, preserved_attrs=None):
-    torch._C._log_api_usage_once("quantization_api.quantize_jit.convert_jit")
     return _convert_jit(model, inplace, debug, quant_type=QuantType.STATIC, preserved_attrs=preserved_attrs)
 
 def convert_dynamic_jit(model, inplace=False, debug=False, preserved_attrs=None):
-    torch._C._log_api_usage_once("quantization_api.quantize_jit.convert_dynamic_jit")
     return _convert_jit(model, inplace, debug, quant_type=QuantType.DYNAMIC, preserved_attrs=preserved_attrs)
 
 def _quantize_jit(model, qconfig_dict, run_fn=None, run_args=None, inplace=False, debug=False, quant_type=QuantType.STATIC):
@@ -112,8 +105,6 @@ def _quantize_jit(model, qconfig_dict, run_fn=None, run_args=None, inplace=False
         run_fn(model, *run_args)
         model = convert_jit(model, True, debug)
 
-    torch._C._jit_pass_constant_propagation(model.graph)
-    torch._C._jit_pass_dce(model.graph)
     return model
 
 def quantize_jit(model, qconfig_dict, run_fn, run_args, inplace=False, debug=False):
@@ -128,7 +119,7 @@ def quantize_jit(model, qconfig_dict, run_fn, run_args, inplace=False, debug=Fal
         `model`: input float TorchScript model
         `qconfig_dict`: qconfig_dict is a dictionary with names of sub modules as key and
         qconfig for that module as value, empty key means the qconfig will be applied
-        to whole model unless it's overwritten by more specific configurations, the
+        to whole model unless it’s overwritten by more specific configurations, the
         qconfig for each module is either found in the dictionary or fallback to
          the qconfig of parent module.
 
@@ -166,7 +157,6 @@ def quantize_jit(model, qconfig_dict, run_fn, run_args, inplace=False, debug=Fal
         [data_loader_test])
     ```
     """
-    torch._C._log_api_usage_once("quantization_api.quantize_jit.quantize_jit")
     return _quantize_jit(model, qconfig_dict, run_fn, run_args, inplace, debug, quant_type=QuantType.STATIC)
 
 def quantize_dynamic_jit(model, qconfig_dict, inplace=False, debug=False):
@@ -207,5 +197,4 @@ def quantize_dynamic_jit(model, qconfig_dict, inplace=False, debug=False):
         [data_loader_test])
     ```
     """
-    torch._C._log_api_usage_once("quantization_api.quantize_jit.quantize_dynamic_jit")
     return _quantize_jit(model, qconfig_dict, inplace=inplace, debug=debug, quant_type=QuantType.DYNAMIC)

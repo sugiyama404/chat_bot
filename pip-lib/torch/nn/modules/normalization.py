@@ -7,7 +7,7 @@ from .. import functional as F
 from .. import init
 
 from torch import Tensor, Size
-from typing import Union, List, Tuple
+from typing import Union, List
 
 
 class LocalResponseNorm(Module):
@@ -141,27 +141,23 @@ class LayerNorm(Module):
         >>> output = m(input)
     """
     __constants__ = ['normalized_shape', 'eps', 'elementwise_affine']
-    normalized_shape: Tuple[int, ...]
+    normalized_shape: _shape_t
     eps: float
     elementwise_affine: bool
 
-    def __init__(self, normalized_shape: _shape_t, eps: float = 1e-5, elementwise_affine: bool = True,
-                 device=None, dtype=None) -> None:
-        factory_kwargs = {'device': device, 'dtype': dtype}
+    def __init__(self, normalized_shape: _shape_t, eps: float = 1e-5, elementwise_affine: bool = True) -> None:
         super(LayerNorm, self).__init__()
         if isinstance(normalized_shape, numbers.Integral):
-            # mypy error: incompatible types in assignment
-            normalized_shape = (normalized_shape,)  # type: ignore[assignment]
-        self.normalized_shape = tuple(normalized_shape)  # type: ignore[arg-type]
+            normalized_shape = (normalized_shape,)
+        self.normalized_shape = tuple(normalized_shape)
         self.eps = eps
         self.elementwise_affine = elementwise_affine
         if self.elementwise_affine:
-            self.weight = Parameter(torch.empty(self.normalized_shape, **factory_kwargs))
-            self.bias = Parameter(torch.empty(self.normalized_shape, **factory_kwargs))
+            self.weight = Parameter(torch.Tensor(*normalized_shape))
+            self.bias = Parameter(torch.Tensor(*normalized_shape))
         else:
             self.register_parameter('weight', None)
             self.register_parameter('bias', None)
-
         self.reset_parameters()
 
     def reset_parameters(self) -> None:
@@ -173,7 +169,7 @@ class LayerNorm(Module):
         return F.layer_norm(
             input, self.normalized_shape, self.weight, self.bias, self.eps)
 
-    def extra_repr(self) -> str:
+    def extra_repr(self) -> Tensor:
         return '{normalized_shape}, eps={eps}, ' \
             'elementwise_affine={elementwise_affine}'.format(**self.__dict__)
 
@@ -226,21 +222,18 @@ class GroupNorm(Module):
     eps: float
     affine: bool
 
-    def __init__(self, num_groups: int, num_channels: int, eps: float = 1e-5, affine: bool = True,
-                 device=None, dtype=None) -> None:
-        factory_kwargs = {'device': device, 'dtype': dtype}
+    def __init__(self, num_groups: int, num_channels: int, eps: float = 1e-5, affine: bool = True) -> None:
         super(GroupNorm, self).__init__()
         self.num_groups = num_groups
         self.num_channels = num_channels
         self.eps = eps
         self.affine = affine
         if self.affine:
-            self.weight = Parameter(torch.empty(num_channels, **factory_kwargs))
-            self.bias = Parameter(torch.empty(num_channels, **factory_kwargs))
+            self.weight = Parameter(torch.Tensor(num_channels))
+            self.bias = Parameter(torch.Tensor(num_channels))
         else:
             self.register_parameter('weight', None)
             self.register_parameter('bias', None)
-
         self.reset_parameters()
 
     def reset_parameters(self) -> None:

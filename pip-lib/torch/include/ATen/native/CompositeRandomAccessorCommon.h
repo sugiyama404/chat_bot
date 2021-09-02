@@ -123,16 +123,13 @@ public:
   using iterator_category = std::random_access_iterator_tag;
 
   C10_HOST_DEVICE
-  CompositeRandomAccessor() = default;
-
-  C10_HOST_DEVICE
   CompositeRandomAccessor(KeyAccessor keys, ValueAccessor values)
     : keys(keys), values(values)
   {}
 
   // Pointer-like operations {
   C10_HOST_DEVICE
-  reference operator*() const {
+  reference operator*() {
     return TupleInfo::tie(*keys, *values);
   }
 

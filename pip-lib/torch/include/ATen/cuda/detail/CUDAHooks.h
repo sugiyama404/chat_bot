@@ -8,9 +8,6 @@
 
 namespace at { namespace cuda { namespace detail {
 
-// Callback to initialize THC Magma, which is implemented in torch_cuda_cu
-TORCH_CUDA_CPP_API extern std::function<void()> THCMagma_init;
-
 // The real implementation of CUDAHooksInterface
 struct CUDAHooks : public at::CUDAHooksInterface {
   CUDAHooks(at::CUDAHooksArgs) {}
@@ -41,7 +38,6 @@ struct CUDAHooks : public at::CUDAHooksInterface {
   int64_t cuFFTGetPlanCacheSize(int64_t device_index) const override;
   void cuFFTClearPlanCache(int64_t device_index) const override;
   int getNumGPUs() const override;
-  void deviceSynchronize(int64_t device_index) const override;
 };
 
 }}} // at::cuda::detail

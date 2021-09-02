@@ -99,9 +99,8 @@ inline void adagrad_update_prefetch_inlined(
     __m256 gi = _mm256_loadu_ps(g + i);
     __m256 hi = _mm256_loadu_ps(h + i);
     __m256 wi = _mm256_loadu_ps(w + i);
-#ifdef __FMA__
+#ifdef __AVX2__
     gi = _mm256_fmadd_ps(_mm256_set1_ps(weight_decay), wi, gi);
-
 #else
     gi = _mm256_add_ps(_mm256_mul_ps(_mm256_set1_ps(weight_decay), wi), gi);
 #endif

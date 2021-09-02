@@ -14,6 +14,7 @@ from caffe2.python import hypothesis_test_util as hu
 
 import time
 import numpy as np
+from hypothesis import settings
 
 
 CI_MAX_EXAMPLES = 2

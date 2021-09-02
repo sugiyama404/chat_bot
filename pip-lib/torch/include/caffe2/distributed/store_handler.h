@@ -10,7 +10,7 @@
 
 namespace caffe2 {
 
-class TORCH_API StoreHandler {
+class CAFFE2_API StoreHandler {
  public:
   static constexpr std::chrono::milliseconds kDefaultTimeout =
       std::chrono::seconds(30);
@@ -67,7 +67,7 @@ class TORCH_API StoreHandler {
 /*
  * The backing store is no longer available. It may have been deleted.
  */
-struct TORCH_API StoreHandlerNotAvailableException
+struct CAFFE2_API StoreHandlerNotAvailableException
     : public std::runtime_error {
   explicit StoreHandlerNotAvailableException(const std::string& msg)
       : std::runtime_error(msg) {}
@@ -80,7 +80,7 @@ struct TORCH_API StoreHandlerNotAvailableException
 /*
  * Timeout accessing the store.
  */
-struct TORCH_API StoreHandlerTimeoutException : public std::runtime_error {
+struct CAFFE2_API StoreHandlerTimeoutException : public std::runtime_error {
   explicit StoreHandlerTimeoutException(const std::string& msg)
       : std::runtime_error(msg) {}
 };

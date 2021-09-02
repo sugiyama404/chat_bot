@@ -8,7 +8,7 @@
 namespace caffe2 {
 
 namespace internal {
-class TORCH_API Caffe2InitializeRegistry {
+class CAFFE2_API Caffe2InitializeRegistry {
  public:
   typedef bool (*InitFunction)(int*, char***);
   // Registry() is defined in .cpp file to make registration work across
@@ -96,12 +96,12 @@ class TORCH_API Caffe2InitializeRegistry {
 };
 }  // namespace internal
 
-TORCH_API bool unsafeRunCaffe2InitFunction(
+CAFFE2_API bool unsafeRunCaffe2InitFunction(
     const char* name,
     int* pargc = nullptr,
     char*** pargv = nullptr);
 
-class TORCH_API InitRegisterer {
+class CAFFE2_API InitRegisterer {
  public:
   InitRegisterer(
       internal::Caffe2InitializeRegistry::InitFunction function,
@@ -128,9 +128,9 @@ class TORCH_API InitRegisterer {
 /**
  * @brief Determine whether GlobalInit has already been run
  */
-TORCH_API bool GlobalInitAlreadyRun();
+CAFFE2_API bool GlobalInitAlreadyRun();
 
-class TORCH_API GlobalInitIsCalledGuard {
+class CAFFE2_API GlobalInitIsCalledGuard {
  public:
   GlobalInitIsCalledGuard() {
     if (!GlobalInitAlreadyRun()) {
@@ -165,7 +165,7 @@ class TORCH_API GlobalInitIsCalledGuard {
  *
  * GlobalInit is also thread-safe and can be called concurrently.
  */
-TORCH_API bool GlobalInit(int* pargc, char*** argv);
+CAFFE2_API bool GlobalInit(int* pargc, char*** argv);
 
 /**
  * @brief Initialize the global environment without command line arguments
@@ -174,6 +174,6 @@ TORCH_API bool GlobalInit(int* pargc, char*** argv);
  * On mobile devices, use this global init, since we cannot pass the
  * command line options to caffe2, no arguments are passed.
  */
-TORCH_API bool GlobalInit();
+CAFFE2_API bool GlobalInit();
 }  // namespace caffe2
 #endif  // CAFFE2_CORE_INIT_H_

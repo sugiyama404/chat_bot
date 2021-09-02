@@ -9,8 +9,8 @@
 // as a track point for bugs, until we find a proper versioning cycle.
 
 #define CAFFE2_VERSION_MAJOR 1
-#define CAFFE2_VERSION_MINOR 9
-#define CAFFE2_VERSION_PATCH 0
+#define CAFFE2_VERSION_MINOR 7
+#define CAFFE2_VERSION_PATCH 1
 
 static_assert(
     CAFFE2_VERSION_MINOR < 100,
@@ -34,7 +34,7 @@ static_assert(
 /* #undef CAFFE2_THREADPOOL_STATS */
 #define CAFFE2_USE_EXCEPTION_PTR
 /* #undef CAFFE2_USE_ACCELERATE */
-/* #undef CAFFE2_USE_CUDNN */
+#define CAFFE2_USE_CUDNN
 /* #undef CAFFE2_USE_EIGEN_FOR_BLAS */
 /* #undef CAFFE2_USE_FBCODE */
 /* #undef CAFFE2_USE_GOOGLE_GLOG */
@@ -44,23 +44,21 @@ static_assert(
 /* #undef CAFFE2_USE_NVTX */
 /* #undef CAFFE2_USE_TRT */
 
+#ifndef USE_NUMPY
+#define USE_NUMPY
+#endif
+
 #ifndef EIGEN_MPL2_ONLY
 #define EIGEN_MPL2_ONLY
 #endif
 
 // Useful build settings that are recorded in the compiled binary
 #define CAFFE2_BUILD_STRINGS { \
-  {"TORCH_VERSION", "1.9.0"}, \
-  {"CXX_COMPILER", "/opt/rh/devtoolset-7/root/usr/bin/c++"}, \
-  {"CXX_FLAGS", " -Wno-deprecated -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -fopenmp -DNDEBUG -DUSE_KINETO -DLIBKINETO_NOCUPTI -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -O2 -fPIC -Wno-narrowing -Wall -Wextra -Werror=return-type -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wno-sign-compare -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-result -Wno-unused-local-typedefs -Wno-strict-overflow -Wno-strict-aliasing -Wno-error=deprecated-declarations -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=redundant-decls -Wno-error=old-style-cast -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Wno-stringop-overflow"}, \
+  {"CXX_FLAGS", " -Wno-deprecated -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -fopenmp -DNDEBUG -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -DUSE_VULKAN_WRAPPER -O2 -fPIC -Wno-narrowing -Wall -Wextra -Werror=return-type -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wno-sign-compare -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-result -Wno-unused-local-typedefs -Wno-strict-overflow -Wno-strict-aliasing -Wno-error=deprecated-declarations -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=redundant-decls -Wno-error=old-style-cast -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Wno-stringop-overflow"}, \
   {"BUILD_TYPE", "Release"}, \
-  {"BLAS_INFO", "mkl"}, \
-  {"LAPACK_INFO", "mkl"}, \
-  {"USE_CUDA", "0"}, \
-  {"CUDA_VERSION", ""}, \
-  {"USE_CUDNN", "OFF"}, \
-  {"CUDNN_VERSION", ""}, \
-  {"USE_NCCL", "OFF"}, \
+  {"BLAS", "MKL"}, \
+  {"USE_CUDA", "ON"}, \
+  {"USE_NCCL", "ON"}, \
   {"USE_MPI", "OFF"}, \
   {"USE_GFLAGS", "OFF"}, \
   {"USE_GLOG", "OFF"}, \

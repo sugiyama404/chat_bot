@@ -22,7 +22,8 @@ logger = logging.getLogger(__name__)
 
 
 
-class Job(context.Managed):
+@context.define_context()
+class Job(object):
     """
     A Job defines three TaskGroups: the `init_group`, the `epoch_group` and the
     `exit_group` which will be run by a JobRunner.
@@ -96,13 +97,11 @@ class Job(context.Managed):
         self.exit_group = session_class.compile(self.exit_group)
 
     def __enter__(self):
-        super(Job, self).__enter__()
         self.epoch_group.__enter__()
         return self
 
     def __exit__(self, *args):
         self.epoch_group.__exit__()
-        super(Job, self).__exit__(*args)
 
     def add_stop_condition(self, output):
         if isinstance(output, core.BlobReference):

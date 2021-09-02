@@ -17,7 +17,7 @@ namespace c10 {
 /// want to setup a guard (i.e., are looking for the moral equivalent
 /// of optional<DeviceGuard>), see OptionalDeviceGuard.
 class DeviceGuard {
- public:
+public:
   /// No default constructor; see Note [Omitted default constructor from RAII]
   explicit DeviceGuard() = delete;
 
@@ -25,10 +25,7 @@ class DeviceGuard {
   explicit DeviceGuard(Device device) : guard_(device) {}
 
   /// This constructor is for testing only.
-  explicit DeviceGuard(
-      Device device,
-      const impl::DeviceGuardImplInterface* impl)
-      : guard_(device, impl) {}
+  explicit DeviceGuard(Device device, const impl::DeviceGuardImplInterface* impl) : guard_(device, impl) {}
 
   /// Copy is disallowed
   DeviceGuard(const DeviceGuard&) = delete;
@@ -51,9 +48,7 @@ class DeviceGuard {
   }
 
   /// This method is for testing only.
-  void reset_device(
-      at::Device device,
-      const impl::DeviceGuardImplInterface* impl) {
+  void reset_device(at::Device device, const impl::DeviceGuardImplInterface* impl) {
     guard_.reset_device(device, impl);
   }
 
@@ -74,7 +69,7 @@ class DeviceGuard {
     return guard_.current_device();
   }
 
- private:
+private:
   impl::InlineDeviceGuard<impl::VirtualGuardImpl> guard_;
 };
 
@@ -84,8 +79,8 @@ class DeviceGuard {
  * Morally, a OptionalDeviceGuard is equivalent to optional<DeviceGuard>, but
  * with extra constructors and methods as appropriate.
  *
- * Besides its obvious use (optionally applying a DeviceGuard),
- * OptionalDeviceGuard is often also used for the following idiom:
+ * Besides its obvious use (optionally applying a DeviceGuard), OptionalDeviceGuard
+ * is often also used for the following idiom:
  *
  *    OptionalDeviceGuard g;
  *    for (const auto& t : tensors) {
@@ -122,7 +117,7 @@ class DeviceGuard {
  * DeviceGuard will still reset the device to original_device_.
  */
 class OptionalDeviceGuard {
- public:
+public:
   /// Create an uninitialized guard.  Set the guard later using reset_device.
   explicit OptionalDeviceGuard() : guard_() {}
 
@@ -134,10 +129,7 @@ class OptionalDeviceGuard {
   explicit OptionalDeviceGuard(optional<Device> device) : guard_(device) {}
 
   /// Constructor for testing only.
-  explicit OptionalDeviceGuard(
-      Device device,
-      const impl::DeviceGuardImplInterface* impl)
-      : guard_(device, impl) {}
+  explicit OptionalDeviceGuard(Device device, const impl::DeviceGuardImplInterface* impl) : guard_(device, impl) {}
 
   /// Copy is disallowed
   OptionalDeviceGuard(const OptionalDeviceGuard&) = delete;
@@ -157,9 +149,7 @@ class OptionalDeviceGuard {
   }
 
   /// For testing only
-  void reset_device(
-      at::Device device,
-      const impl::DeviceGuardImplInterface* impl) {
+  void reset_device(at::Device device, const impl::DeviceGuardImplInterface* impl) {
     guard_.reset_device(device, impl);
   }
 
@@ -174,7 +164,7 @@ class OptionalDeviceGuard {
     return guard_.current_device();
   }
 
- private:
+private:
   impl::InlineOptionalDeviceGuard<impl::VirtualGuardImpl> guard_;
 };
 
@@ -183,8 +173,7 @@ class OptionalDeviceGuard {
 // Design note: in principle, we could avoid these wrappers using:
 //
 // using DeviceGuard = impl::InlineDeviceGuard<impl::VirtualGuardImpl>;
-// using OptionalDeviceGuard =
-// impl::InlineOptionalDeviceGuard<impl::VirtualGuardImpl>;
+// using OptionalDeviceGuard = impl::InlineOptionalDeviceGuard<impl::VirtualGuardImpl>;
 //
 // But the error messages are worse, and our users can't just look at the
 // header file to find out what's going on.  Furthermore, for specializations

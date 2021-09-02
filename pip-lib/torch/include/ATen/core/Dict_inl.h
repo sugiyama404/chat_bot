@@ -1,7 +1,6 @@
 #pragma once
 
 #include <ATen/core/ivalue.h>
-#include <c10/util/hash.h>
 
 namespace c10 {
 namespace detail {
@@ -39,13 +38,11 @@ namespace detail {
 
 inline size_t DictKeyHash::operator()(const IValue& ivalue) const {
   if (ivalue.isInt()) {
-    return std::hash<int64_t>()(ivalue.toInt());
+    return std::hash<int>()(ivalue.toInt());
   } else if (ivalue.isString()) {
     return std::hash<std::string>()(ivalue.toStringRef());
   } else if (ivalue.isDouble()) {
     return std::hash<double>()(ivalue.toDouble());
-  } else if (ivalue.isComplexDouble()) {
-    return c10::hash<c10::complex<double>>()(ivalue.toComplexDouble());
   } else if (ivalue.isBool()) {
     return std::hash<bool>()(ivalue.toBool());
   } else if (ivalue.isTensor()) {

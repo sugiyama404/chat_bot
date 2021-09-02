@@ -11,13 +11,10 @@ class _InstanceNorm(_NormBase):
         eps: float = 1e-5,
         momentum: float = 0.1,
         affine: bool = False,
-        track_running_stats: bool = False,
-        device=None,
-        dtype=None
+        track_running_stats: bool = False
     ) -> None:
-        factory_kwargs = {'device': device, 'dtype': dtype}
         super(_InstanceNorm, self).__init__(
-            num_features, eps, momentum, affine, track_running_stats, **factory_kwargs)
+            num_features, eps, momentum, affine, track_running_stats)
 
     def _check_input_dim(self, input):
         raise NotImplementedError
@@ -54,6 +51,7 @@ class _InstanceNorm(_NormBase):
 
     def forward(self, input: Tensor) -> Tensor:
         self._check_input_dim(input)
+
         return F.instance_norm(
             input, self.running_mean, self.running_var, self.weight, self.bias,
             self.training or not self.track_running_stats, self.momentum, self.eps)

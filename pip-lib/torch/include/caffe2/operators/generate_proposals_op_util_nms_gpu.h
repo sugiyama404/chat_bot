@@ -23,7 +23,7 @@ namespace utils {
 // by NMS
 //    Those tensors will be resized to the necessary size
 // context : current CUDA context
-TORCH_API void nms_gpu_upright(
+CAFFE2_API void nms_gpu_upright(
     const float* d_desc_sorted_boxes,
     const int N,
     const float thresh,
@@ -42,7 +42,7 @@ struct RotatedBox {
 // d_desc_sorted_boxes : pixel coordinates of proposed bounding boxes
 //    size: (N,5), format: [x_ct; y_ctr; width; height; angle]
 //    the boxes are sorted by scores in descending order
-TORCH_API void nms_gpu_rotated(
+CAFFE2_API void nms_gpu_rotated(
     const float* d_desc_sorted_boxes,
     const int N,
     const float thresh,
@@ -52,7 +52,7 @@ TORCH_API void nms_gpu_rotated(
     TensorCPU& host_delete_mask,
     CUDAContext* context);
 
-TORCH_API void nms_gpu(
+CAFFE2_API void nms_gpu(
     const float* d_desc_sorted_boxes,
     const int N,
     const float thresh,

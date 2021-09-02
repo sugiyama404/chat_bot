@@ -10,10 +10,11 @@ from caffe2.python.task import Task, TaskGroup
 from caffe2.python.control_ops_util import add_if_op, add_while_op
 
 
-class NetBuilder(context.Managed):
+@context.define_context()
+class NetBuilder(object):
     """
     Scope-driven mechanism for building nets, loops and conditional blocks.
-    Args:
+    Arguments:
       name: NetBuilder's name
       initial_scope: list of blobs that are available for reading/writing
     Example:
@@ -137,8 +138,6 @@ class NetBuilder(context.Managed):
         return self._children
 
     def __exit__(self, etype, *args):
-        super(NetBuilder, self).__exit__(etype, *args)
-
         if self._use_control_ops and len(self._children) > 0:
             _children = self._children
             self._reset_children()

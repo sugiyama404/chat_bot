@@ -7,6 +7,7 @@ from builtins import bytes
 import copy
 import logging
 import os
+import six
 
 from caffe2.proto import caffe2_pb2
 from caffe2.python import core, workspace
@@ -92,7 +93,7 @@ def _get_blob_names(ops):
 
 
 def _remap_keys(m, f):
-    m2 = {f(key): value for key, value in m.items()}
+    m2 = {f(key): value for key, value in six.iteritems(m)}
     m.clear()
     m.update(m2)
 

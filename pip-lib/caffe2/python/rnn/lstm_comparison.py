@@ -2,6 +2,7 @@
 
 
 
+from caffe2.proto import caffe2_pb2
 from caffe2.python import workspace, core, lstm_benchmark, utils
 from copy import copy
 

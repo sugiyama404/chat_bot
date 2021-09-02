@@ -16,6 +16,7 @@ from hypothesis import settings as ht_settings
 import hypothesis.strategies as st
 import numpy as np
 import unittest
+import os
 
 
 def gru_unit(*args, **kwargs):

@@ -207,9 +207,7 @@ class CPUSparseLengthsReductionOp : public Operator<CPUContext> {
             " is out of bounds: ",
             idx,
             ", range 0 to ",
-            N,
-            ", actual batch length is ",
-            M);
+            N);
         ++current;
       }
     }

@@ -16,10 +16,6 @@ inline Tensor pixel_shuffle(
     upscale_factor
   );
 }
-
-inline Tensor pixel_unshuffle(const Tensor& input, int64_t downscale_factor) {
-  return torch::pixel_unshuffle(input, downscale_factor);
-}
 } // namespace detail
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
 
@@ -38,12 +34,6 @@ inline Tensor pixel_shuffle(
     const Tensor& input,
     const PixelShuffleFuncOptions& options) {
   return detail::pixel_shuffle(input, options.upscale_factor());
-}
-
-inline Tensor pixel_unshuffle(
-    const Tensor& input,
-    const PixelUnshuffleFuncOptions& options) {
-  return detail::pixel_unshuffle(input, options.downscale_factor());
 }
 
 } // namespace functional

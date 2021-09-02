@@ -2,10 +2,10 @@
 
 """
 
-from torch import Tensor
-import torch
-
 from typing import Optional, Tuple
+
+import torch
+from torch import Tensor
 
 
 def is_sparse(A):
@@ -29,7 +29,8 @@ def get_floating_dtype(A):
     return torch.float32
 
 
-def matmul(A: Optional[Tensor], B: Tensor) -> Tensor:
+def matmul(A, B):
+    # type: (Optional[Tensor], Tensor) -> Tensor
     """Multiply two matrices.
 
     If A is None, return B. A can be sparse or dense. B is always
@@ -65,13 +66,15 @@ def transjugate(A):
     return conjugate(transpose(A))
 
 
-def bform(X: Tensor, A: Optional[Tensor], Y: Tensor) -> Tensor:
+def bform(X, A, Y):
+    # type: (Tensor, Optional[Tensor], Tensor) -> Tensor
     """Return bilinear form of matrices: :math:`X^T A Y`.
     """
     return matmul(transpose(X), matmul(A, Y))
 
 
-def qform(A: Optional[Tensor], S: Tensor):
+def qform(A, S):
+    # type: (Optional[Tensor], Tensor) -> Tensor
     """Return quadratic form :math:`S^T A S`.
     """
     return bform(S, A, S)
@@ -82,18 +85,21 @@ def basis(A):
     """
     if A.is_cuda:
         # torch.orgqr is not available in CUDA
-        Q = torch.linalg.qr(A).Q
+        Q, _ = torch.qr(A, some=True)
     else:
         Q = torch.orgqr(*torch.geqrf(A))
     return Q
 
 
-def symeig(A: Tensor, largest: Optional[bool] = False) -> Tuple[Tensor, Tensor]:
+def symeig(A, largest=False, eigenvectors=True):
+    # type: (Tensor, Optional[bool], Optional[bool]) -> Tuple[Tensor, Tensor]
     """Return eigenpairs of A with specified ordering.
     """
     if largest is None:
         largest = False
-    E, Z = torch.linalg.eigh(A, UPLO='U')
+    if eigenvectors is None:
+        eigenvectors = True
+    E, Z = torch.symeig(A, eigenvectors, True)
     # assuming that E is ordered
     if largest:
         E = torch.flip(E, dims=(-1,))

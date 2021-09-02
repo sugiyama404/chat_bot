@@ -12,7 +12,7 @@
 
 namespace caffe2 {
 
-TORCH_API void ClipTransformRGB(
+CAFFE2_API void ClipTransformRGB(
     const unsigned char* buffer_rgb,
     const int crop_size,
     const int length_rgb,
@@ -27,7 +27,7 @@ TORCH_API void ClipTransformRGB(
     const std::vector<float>& inv_std_rgb,
     float* transformed_clip);
 
-TORCH_API void ClipTransformOpticalFlow(
+CAFFE2_API void ClipTransformOpticalFlow(
     const unsigned char* buffer_rgb,
     const int crop_size,
     const int length_of,

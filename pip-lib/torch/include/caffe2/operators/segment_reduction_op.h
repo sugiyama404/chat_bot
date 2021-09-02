@@ -378,7 +378,6 @@ class AbstractReduceFrontOrBackGradientOp : public Operator<Context> {
     auto& source_shape = this->template Input<Tensor>(SOURCE_SHAPE, CPU);
 
     typename ReducerGradient::Meta ctx(reduction_grad, 0, FirstDim);
-    // NOLINTNEXTLINE(clang-diagnostic-sign-compare)
     for (int i = 0; i < ReducerGradient::originalInputs().size(); ++i) {
       auto& aux_in = Input(i);
       ctx.observeOriginalInput(
@@ -744,7 +743,6 @@ class AbstractSortedSegmentGradientOp : public Operator<Context> {
     int64_t N = segment_ids.size(0);
 
     typename ReducerGradient::Meta ctx(segment_grads, 1);
-    // NOLINTNEXTLINE(clang-diagnostic-sign-compare)
     for (int i = 0; i < ReducerGradient::originalInputs().size(); ++i) {
       auto& aux_in = Input(i);
       CAFFE_ENFORCE_EQ(
@@ -1160,7 +1158,6 @@ class AbstractUnsortedSegmentGradientOp : public Operator<Context> {
     int64_t N = segment_ids.size(0);
 
     typename ReducerGradient::Meta ctx(segment_grads, 1);
-    // NOLINTNEXTLINE(clang-diagnostic-sign-compare)
     for (int i = 0; i < ReducerGradient::originalInputs().size(); ++i) {
       auto& aux_in = Input(i);
       CAFFE_ENFORCE_EQ(
@@ -1658,7 +1655,6 @@ class AbstractLengthsWithMainInputGradientOp : public Operator<Context> {
     const TLengths* lengths = lengthsInput.template data<TLengths>();
 
     typename ReducerGradient::Meta ctx(segmentGradsInput, 1);
-    // NOLINTNEXTLINE(clang-diagnostic-sign-compare)
     for (int i = 0; i < ReducerGradient::originalInputs().size(); ++i) {
       int aux_num = ReducerGradient::originalInputs()[i];
       auto& aux_in = Input(i);
@@ -1760,7 +1756,6 @@ class AbstractLengthsWithMainInputAndForwardOutputGradientOp
     const TLengths* lengths = lengthsInput.template data<TLengths>();
 
     typename ReducerGradient::Meta ctx(segmentGradsInput, 1);
-    // NOLINTNEXTLINE(clang-diagnostic-sign-compare)
     for (int i = 0; i < ReducerGradient::originalInputs().size(); ++i) {
       int aux_num = ReducerGradient::originalInputs()[i];
       auto& aux_in = Input(i);
@@ -2011,13 +2006,13 @@ i.e. `len(LENGTHS)`. Other dimensions are inherited from the input tensor.
         "OUTPUT",
         "Aggregated output tensor. Has the first dimension of K "
         "(the number of segments).");
-    schema.TensorInferenceFunction(OpSchema::NeedsAllInputShapes(
+    schema.TensorInferenceFunction(
         [](const OperatorDef&, const std::vector<TensorShape>& input_types) {
           std::vector<TensorShape> out(1);
           out[0] = input_types[0];
           out[0].set_dims(0, input_types[Reducer::kInputCount + 1].dims(0));
           return out;
-        }));
+        });
     ReducerDef::PopulateSchema(schema);
 
     schema.CostInferenceFunction(

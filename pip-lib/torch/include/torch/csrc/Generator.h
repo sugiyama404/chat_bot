@@ -5,7 +5,6 @@
 
 #include <torch/csrc/THP_export.h>
 
-// NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
 struct THPGenerator {
   PyObject_HEAD
   at::Generator cdata;
@@ -19,7 +18,6 @@ THP_API PyObject * THPGenerator_initDefaultGenerator(at::Generator cdata);
 #define THPGenerator_Check(obj) \
   PyObject_IsInstance(obj, THPGeneratorClass)
 
-// NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 THP_API PyObject *THPGeneratorClass;
 
 bool THPGenerator_init(PyObject *module);

@@ -1,7 +1,6 @@
 import warnings
 import importlib
 from inspect import getmembers, isfunction
-from typing import Dict, Tuple, Any, Union
 
 # The symbolic registry "_registry" is a dictionary that maps operators
 # (for a specific domain and opset version) to their symbolic functions.
@@ -9,11 +8,11 @@ from typing import Dict, Tuple, Any, Union
 # The keys are tuples (domain, version), (where domain is a string, and version is an int),
 # and the operator's name (string).
 # The map's entries are as follows : _registry[(domain, version)][op_name] = op_symbolic
-_registry: Dict[Tuple[str, int], Dict] = {}
+_registry = {}
 
-_symbolic_versions: Dict[Union[int, str], Any] = {}
-from torch.onnx.symbolic_helper import _onnx_stable_opsets, _onnx_main_opset
-for opset_version in _onnx_stable_opsets + [_onnx_main_opset]:
+_symbolic_versions = {}
+from torch.onnx.symbolic_helper import _onnx_stable_opsets
+for opset_version in _onnx_stable_opsets:
     module = importlib.import_module('torch.onnx.symbolic_opset{}'.format(opset_version))
     _symbolic_versions[opset_version] = module
 
@@ -32,10 +31,6 @@ def register_ops_helper(domain, version, iter_version):
             op = ('len', op[1])
         if op[0] == '_list':
             op = ('list', op[1])
-        if op[0] == '_any':
-            op = ('any', op[1])
-        if op[0] == '_all':
-            op = ('all', op[1])
         if isfunction(op[1]) and not is_registered_op(op[0], domain, version):
             register_op(op[0], op[1], domain, version)
 
@@ -95,7 +90,7 @@ def is_registered_op(opname, domain, version):
 
 def get_op_supported_version(opname, domain, version):
     iter_version = version
-    while iter_version <= _onnx_main_opset:
+    while iter_version <= _onnx_stable_opsets[-1]:
         ops = [op[0] for op in get_ops_in_version(iter_version)]
         if opname in ops:
             return iter_version
@@ -112,6 +107,6 @@ def get_registered_op(opname, domain, version):
         if supported_version is not None:
             msg += "Support for this operator was added in version " + str(supported_version) + ", try exporting with this version."
         else:
-            msg += "Please feel free to request support or submit a pull request on PyTorch GitHub."
+            msg += "Please open a bug to request ONNX export support for the missing operator."
         raise RuntimeError(msg)
     return _registry[(domain, version)][opname]

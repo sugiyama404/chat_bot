@@ -4,7 +4,6 @@
 #include <torch/csrc/autograd/autograd.h>
 #include <torch/csrc/autograd/function.h>
 #include <torch/csrc/autograd/variable.h>
-#include <torch/csrc/autograd/InferenceMode.h>
 #include <torch/csrc/utils/variadic.h>
 
 #include <ATen/ATen.h>

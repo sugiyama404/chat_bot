@@ -22,12 +22,12 @@ class MishGradientOp final : public Operator<Context> {
   bool DoRunWithType();
 
   bool RunOnDevice() override {
-    return DispatchHelper<TensorTypes<float, double>>::call(this, Input(INPUT));
+    return DispatchHelper<TensorTypes<float, double>>::call(this, Input(X));
   }
 
- private:
-  INPUT_TAGS(INPUT, OUTPUT, OUTPUT_GRAD);
-  OUTPUT_TAGS(INPUT_GRAD);
+ protected:
+  INPUT_TAGS(X, Y, DY);
+  OUTPUT_TAGS(DX);
 };
 
 } // namespace caffe2

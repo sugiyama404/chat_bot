@@ -11,6 +11,9 @@ import caffe2.python.serialized_test.serialized_test_util as serial
 import hypothesis.strategies as st
 import numpy as np
 
+import os
+import unittest
+
 class RecurrentNetworkTest(serial.SerializedTestCase):
     @given(T=st.integers(1, 4),
            n=st.integers(1, 5),

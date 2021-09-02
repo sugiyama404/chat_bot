@@ -9,6 +9,7 @@ import hypothesis.strategies as st
 import numpy as np
 
 import unittest
+import os
 
 def sigmoid(x):
     return 1.0 / (1.0 + np.exp(-x))

@@ -10,6 +10,7 @@ import time
 import logging
 import socket
 import abc
+import six
 
 from collections import OrderedDict
 from future.utils import viewkeys, viewvalues
@@ -25,7 +26,7 @@ an external log destination.
 
 
 class ExternalLogger(object):
-    __metaclass__ = abc.ABCMeta
+    six.add_metaclass(abc.ABCMeta)
 
     @abc.abstractmethod
     def set_runtime_args(self, runtime_args):
@@ -110,5 +111,5 @@ class ModelTrainerLog():
             try:
                 logger.log(logdict)
             except Exception as e:
-                logging.warning(
+                logging.warn(
                     "Failed to call ExternalLogger: {}".format(e), e)

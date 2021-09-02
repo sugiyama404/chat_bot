@@ -6,8 +6,6 @@
 namespace torch {
 namespace jit {
 
-TORCH_API void removeDropout(std::shared_ptr<Graph>& graph);
-
 TORCH_API void removeDropout(script::Module& module);
 
 } // namespace jit

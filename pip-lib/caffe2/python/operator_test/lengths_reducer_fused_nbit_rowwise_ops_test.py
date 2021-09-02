@@ -3,7 +3,7 @@
 import caffe2.python.hypothesis_test_util as hu
 import hypothesis.strategies as st
 import numpy as np
-from caffe2.python import core, workspace
+from caffe2.python import core, dyndep, workspace
 from hypothesis import given
 
 

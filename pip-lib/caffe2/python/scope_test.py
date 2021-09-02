@@ -4,6 +4,7 @@
 
 
 from caffe2.python import scope, core, workspace
+from caffe2.proto import caffe2_pb2
 
 import unittest
 import threading

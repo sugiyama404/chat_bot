@@ -2,7 +2,6 @@ import torch
 import warnings
 from torch.distributions import constraints
 from torch.distributions.utils import lazy_property
-from typing import Dict, Optional, Any
 
 
 class Distribution(object):
@@ -12,21 +11,12 @@ class Distribution(object):
 
     has_rsample = False
     has_enumerate_support = False
-    _validate_args = __debug__
+    _validate_args = False
+    support = None
+    arg_constraints = {}
 
     @staticmethod
     def set_default_validate_args(value):
-        """
-        Sets whether validation is enabled or disabled.
-
-        The default behavior mimics Python's ``assert`` statement: validation
-        is on by default, but is disabled if Python is run in optimized mode
-        (via ``python -O``). Validation may be expensive, so you may want to
-        disable it once a model is working.
-
-        Args:
-            value (bool): Whether to enable validation.
-        """
         if value not in [True, False]:
             raise ValueError
         Distribution._validate_args = value
@@ -37,14 +27,7 @@ class Distribution(object):
         if validate_args is not None:
             self._validate_args = validate_args
         if self._validate_args:
-            try:
-                arg_constraints = self.arg_constraints
-            except NotImplementedError:
-                arg_constraints = {}
-                warnings.warn(f'{self.__class__} does not define `arg_constraints`. ' +
-                              'Please set `arg_constraints = {}` or initialize the distribution ' +
-                              'with `validate_args=False` to turn off validation.')
-            for param, constraint in arg_constraints.items():
+            for param, constraint in self.arg_constraints.items():
                 if constraints.is_dependent(constraint):
                     continue  # skip constraints that cannot be checked
                 if param not in self.__dict__ and isinstance(getattr(type(self), param), lazy_property):
@@ -89,7 +72,7 @@ class Distribution(object):
         return self._event_shape
 
     @property
-    def arg_constraints(self) -> Dict[str, constraints.Constraint]:
+    def arg_constraints(self):
         """
         Returns a dictionary from argument names to
         :class:`~torch.distributions.constraints.Constraint` objects that
@@ -99,7 +82,7 @@ class Distribution(object):
         raise NotImplementedError
 
     @property
-    def support(self) -> Optional[Any]:
+    def support(self):
         """
         Returns a :class:`~torch.distributions.constraints.Constraint` object
         representing this distribution's support.
@@ -265,15 +248,8 @@ class Distribution(object):
             if i != 1 and j != 1 and i != j:
                 raise ValueError('Value is not broadcastable with batch_shape+event_shape: {} vs {}.'.
                                  format(actual_shape, expected_shape))
-        try:
-            support = self.support
-        except NotImplementedError:
-            warnings.warn(f'{self.__class__} does not define `support` to enable ' +
-                          'sample validation. Please initialize the distribution with ' +
-                          '`validate_args=False` to turn off validation.')
-            return
-        assert support is not None
-        if not support.check(value).all():
+
+        if not self.support.check(value).all():
             raise ValueError('The value argument must be within the support')
 
     def _get_checked_instance(self, cls, _instance=None):

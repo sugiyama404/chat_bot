@@ -31,6 +31,7 @@
 #include <torch/csrc/Exceptions.h>
 #include <torch/csrc/Generator.h>
 #include <torch/csrc/Module.h>
+#include <torch/csrc/PtrWrapper.h>
 #include <torch/csrc/Size.h>
 #include <torch/csrc/Storage.h>
 #include <torch/csrc/Types.h>

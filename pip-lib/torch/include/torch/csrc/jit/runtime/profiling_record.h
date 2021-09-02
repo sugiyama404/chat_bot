@@ -82,8 +82,6 @@ namespace jit {
 using ::c10::TensorTypePtr;
 using Dimension = int64_t;
 
-TORCH_API void RegisterProfilingNode(const std::function<bool(const Node*)>&);
-
 struct ProfilingRecord;
 
 // `SetPartitioningHelper` is used to maintain the following invariant:
@@ -204,10 +202,11 @@ struct ProfilingRecord {
     return profiled_graph_;
   }
 
-  TORCH_API ProfileIValueOp* createProfileIValueNode(Value* in_val);
-
  private:
   ProfileOp* createProfileNode(
+      const std::function<void(Stack&)>& fp,
+      at::ArrayRef<Value*> inputs);
+  ProfileOptionalOp* createProfileOptionalNode(
       const std::function<void(Stack&)>& fp,
       at::ArrayRef<Value*> inputs);
   void instrumentBlock(Block* block);

@@ -29,7 +29,7 @@ C10_DECLARE_int(caffe2_net_async_tracing_nth);
 namespace caffe2 {
 namespace tracing {
 
-struct TORCH_API TracerEvent {
+struct CAFFE2_API TracerEvent {
   int op_id_ = -1;
   int task_id_ = -1;
   int stream_id_ = -1;
@@ -70,7 +70,7 @@ struct TracingConfig {
   int64_t trace_for_n_ms = 1000; // 1sec
 };
 
-class TORCH_API Tracer {
+class CAFFE2_API Tracer {
  public:
   Tracer(
       const NetBase* net,
@@ -111,9 +111,8 @@ class TORCH_API Tracer {
   friend class TracerGuard;
 };
 
-class TORCH_API TracerGuard {
+class CAFFE2_API TracerGuard {
  public:
-  // NOLINTNEXTLINE(clang-analyzer-optin.cplusplus.UninitializedObject)
   TracerGuard() {}
 
   void init(Tracer* tracer);
@@ -143,16 +142,16 @@ class TORCH_API TracerGuard {
 
 // Extract the shard id from name of the form "...shard:123..."
 // Return -1 if there is no shard found
-TORCH_API int extractShardId(const std::string& name);
+CAFFE2_API int extractShardId(const std::string& name);
 
 // Check if the net name is white-listed for tracing (specified via a command
 // line flag)
-TORCH_API bool isTraceableNetName(const std::string& net_name);
+CAFFE2_API bool isTraceableNetName(const std::string& net_name);
 
-TORCH_API std::shared_ptr<Tracer> create(
+CAFFE2_API std::shared_ptr<Tracer> create(
     const NetBase* net,
     const std::string& net_name);
-TORCH_API bool startIter(const std::shared_ptr<Tracer>& tracer);
+CAFFE2_API bool startIter(const std::shared_ptr<Tracer>& tracer);
 
 } // namespace tracing
 
