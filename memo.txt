@@ -85,3 +85,16 @@ docker-compose exec web bash -c "pip install flask-cors"
       - 80:80
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
