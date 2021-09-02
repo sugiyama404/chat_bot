@@ -155,8 +155,8 @@ class Seq2Seq(nn.Module):
         return y_decoder
 
 
-input_field = torch.load("input.pkl", pickle_module=dill)
-reply_field = torch.load("reply.pkl", pickle_module=dill)
+input_field = torch.load("models/input.pkl", pickle_module=dill)
+reply_field = torch.load("models/reply.pkl", pickle_module=dill)
 
 is_gpu = False
 n_h = 896
@@ -176,7 +176,7 @@ decoder = Decoder(n_h, n_out, n_vocab_rep, n_emb, num_layers, dropout=dropout)
 seq2seq = Seq2Seq(encoder, decoder, is_gpu=is_gpu)
 
 seq2seq.load_state_dict(torch.load(
-    "model.pth", map_location=torch.device("cpu")))
+    "models/model.pth", map_location=torch.device("cpu")))
 
 j_tk = Tokenizer()
 
