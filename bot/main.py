@@ -113,7 +113,7 @@ class Seq2Seq(nn.Module):
             self.encoder.cuda()
             self.decoder.cuda()
 
-    def forward(self, x_encoder, x_decoder):  # 訓練に使用
+    def forward(self, x_encoder, x_decoder):
         if self.is_gpu:
             x_encoder, x_decoder = x_encoder.cuda(), x_decoder.cuda()
 
