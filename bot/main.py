@@ -14,8 +14,9 @@ CORS(app)
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
-    data = request.get_data()
-    inp_text = data.content
+    data = request.form['content']
+    print(data)
+    inp_text = data
     rep_text = reply(inp_text, j_tk, max_length=20)
     print("reply:", rep_text)
 
