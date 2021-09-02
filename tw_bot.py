@@ -1,26 +1,18 @@
-from flask import Flask, request, jsonify, Response
-from flask_cors import CORS
-import json
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import optim
 import dill
 from janome.tokenizer import Tokenizer
+import tweepy
+import re
+import os
+import sys
+import random
+import time
+import keys
 
-app = Flask(__name__)
-CORS(app)
-
-
-@app.route('/', methods=['POST', 'GET'])
-def index():
-    data = request.get_data()
-    inp_text = data.content
-    rep_text = reply(inp_text, j_tk, max_length=20)
-    print("reply:", rep_text)
-
-    print(data)
-    return jsonify({"content": rep_text})
+# ------ モデルの定義 ------
 
 
 class Encoder(nn.Module):
@@ -217,7 +209,21 @@ def reply(inp_text, tokenizer, max_length=10):
 
     return rep_text
 
+# ------ Twitterの各設定 ------
+# 以下を修正するよ。
+
+# ------ 返答機能の実装 ------
+
+
+def reply_tweet(interval=600):
+
+    inp_text = ''
+
+    rep_text = reply(inp_text, j_tk, max_length=20)
+    print("reply:", rep_text)
+
+    return rep_text
+
 
 if __name__ == "__main__":
-    # db.create_all()
-    app.run(host='0.0.0.0', port=8000)
+    since_id = reply_tweet(interval=600)
