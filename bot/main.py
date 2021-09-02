@@ -14,13 +14,11 @@ CORS(app)
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
-    data = request.form['content']
-    print(data)
-    inp_text = data
+    inp_text = request.form['content']
     rep_text = reply(inp_text, j_tk, max_length=20)
+    print("input:", inp_text)
     print("reply:", rep_text)
 
-    print(data)
     return jsonify({"content": rep_text})
 
 

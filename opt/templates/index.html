@@ -65,11 +65,12 @@
 
                     var hostUrl = 'http://localhost:8000';
                     var box = 'Hello, world!';
+                    var task_content = '{{ task_content }}';
                     $.ajax({
                         url: hostUrl,
                         type: 'post',
                         timeout: 10000,
-                        data: { content: "自由研究を発表するようです" },
+                        data: { content: task_content },
                     }).done(function (data) {
                         box = data.content;
                     }).fail(function (XMLHttpRequest, textStatus, errorThrown) {

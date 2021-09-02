@@ -20,11 +20,12 @@ class Chat(db.Model):
 
 
 flag = False
+task_content = ''
 
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
-    global flag
+    global flag, task_content
     if request.method == 'POST':
         task_content = request.form['content']
         task_type = request.form['type']
@@ -43,7 +44,7 @@ def index():
         return redirect('/')
     else:
         tasks = Chat.query.order_by(Chat.date_created).all()
-        return render_template('index.html', tasks=tasks, flag=flag)
+        return render_template('index.html', tasks=tasks, flag=flag, task_content=task_content)
 
 
 @ app.route('/delete/<int:id>')
