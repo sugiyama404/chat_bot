@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, Response
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import json
 import torch
 import torch.nn as nn
@@ -9,10 +9,11 @@ import dill
 from janome.tokenizer import Tokenizer
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, support_credentials=True)
 
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/', methods=['POST'])
+@cross_origin(supports_credentials=True)
 def index():
     inp_text = request.form['content']
     rep_text = reply(inp_text, j_tk, max_length=20)
