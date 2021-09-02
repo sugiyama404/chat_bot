@@ -3,7 +3,7 @@ services:
   web:
     restart: always
     build: .
-    container_name: "web_chat"
+    container_name: "chat_web"
     command: "python main.py"
     working_dir: "/root/opt"
     tty: true
@@ -16,7 +16,7 @@ services:
   bot:
     restart: always
     build: .
-    container_name: "bot_chat"
+    container_name: "chat_bot"
     command: "python main.py"
     working_dir: "/root/opt"
     tty: true
