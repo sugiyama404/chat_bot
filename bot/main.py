@@ -29,28 +29,26 @@ class Encoder(nn.Module):
         self.n_h = n_h
         self.num_layers = num_layers
         self.bidirectional = bidirectional
-        self.dropout = dropout  # ドロップアウト層
+        self.dropout = dropout
 
-        # 埋め込み層
         self.embedding = nn.Embedding(n_vocab, n_emb)
         self.embedding_dropout = nn.Dropout(self.dropout)
 
-        self.gru = nn.GRU(  # GRU層
-            input_size=n_emb,  # 入力サイズ
-            hidden_size=n_h,  # ニューロン数
-            batch_first=True,  # 入力を (バッチサイズ, 時系列の数, 入力の数) にする
-            num_layers=num_layers,  # RNN層の数（層を重ねることも可能）
-            bidirectional=bidirectional,  # Bidrectional RNN
+        self.gru = nn.GRU(
+            input_size=n_emb,
+            hidden_size=n_h,
+            batch_first=True,
+            num_layers=num_layers,
+            bidirectional=bidirectional,
         )
 
     def forward(self, x):
-        # 文章の長さを取得
         idx_pad = input_field.vocab.stoi["<pad>"]
         sentence_lengths = x.size()[1] - (x == idx_pad).sum(dim=1)
 
-        y = self.embedding(x)  # 単語をベクトルに変換
+        y = self.embedding(x)
         y = self.embedding_dropout(y)
-        y = nn.utils.rnn.pack_padded_sequence(  # 入力のパッキング
+        y = nn.utils.rnn.pack_padded_sequence(
             y,
             sentence_lengths,
             batch_first=True,
@@ -58,8 +56,8 @@ class Encoder(nn.Module):
         )
         y, h = self.gru(y)
 
-        y, _ = nn.utils.rnn.pad_packed_sequence(y, batch_first=True)  # テンソルに戻す
-        if self.bidirectional:  # 双方向の値を足し合わせる
+        y, _ = nn.utils.rnn.pad_packed_sequence(y, batch_first=True)
+        if self.bidirectional:
             y = y[:, :, :self.n_h] + y[:, :, self.n_h:]
             h = h[:self.num_layers] + h[self.num_layers:]
         return y, h
@@ -74,31 +72,29 @@ class Decoder(nn.Module):
         self.num_layers = num_layers
         self.dropout = dropout
 
-        # 埋め込み層
         self.embedding = nn.Embedding(n_vocab, n_emb)
-        self.embedding_dropout = nn.Dropout(self.dropout)  # ドロップアウト層
+        self.embedding_dropout = nn.Dropout(self.dropout)
 
-        self.gru = nn.GRU(  # GRU層
-            input_size=n_emb,  # 入力サイズ
-            hidden_size=n_h,  # ニューロン数
-            batch_first=True,  # 入力を (バッチサイズ, 時系列の数, 入力の数) にする
-            num_layers=num_layers,  # RNN層の数（層を重ねることも可能）
+        self.gru = nn.GRU(
+            input_size=n_emb,
+            hidden_size=n_h,
+            batch_first=True,
+            num_layers=num_layers,
         )
 
-        self.fc = nn.Linear(n_h*2, self.n_out)  # コンテキストベクトルが合流するので2倍のサイズ
+        self.fc = nn.Linear(n_h*2, self.n_out)
 
     def forward(self, x, h_encoder, y_encoder):
-        y = self.embedding(x)  # 単語をベクトルに変換
+        y = self.embedding(x)
         y = self.embedding_dropout(y)
         y, h = self.gru(y, h_encoder)
 
-        # ----- Attension -----
-        y_tr = torch.transpose(y, 1, 2)  # 次元1と次元2を入れ替える
-        ed_mat = torch.bmm(y_encoder, y_tr)  # バッチごとに行列積
-        attn_weight = F.softmax(ed_mat, dim=1)  # attension weightの計算
-        attn_weight_tr = torch.transpose(attn_weight, 1, 2)  # 次元1と次元2を入れ替える
-        context = torch.bmm(attn_weight_tr, y_encoder)  # コンテキストベクトルの計算
-        y = torch.cat([y, context], dim=2)  # 出力とコンテキストベクトルの合流
+        y_tr = torch.transpose(y, 1, 2)
+        ed_mat = torch.bmm(y_encoder, y_tr)
+        attn_weight = F.softmax(ed_mat, dim=1)
+        attn_weight_tr = torch.transpose(attn_weight, 1, 2)
+        context = torch.bmm(attn_weight_tr, y_encoder)
+        y = torch.cat([y, context], dim=2)
 
         y = self.fc(y)
         y = F.softmax(y, dim=2)
@@ -130,12 +126,12 @@ class Seq2Seq(nn.Module):
             y_decoder = y_decoder.cuda()
 
         for t in range(0, n_time):
-            x = x_decoder[:, t:t+1]  # Decoderの入力を使用
+            x = x_decoder[:, t:t+1]
             y, h = self.decoder(x, h, y_encoder)
             y_decoder[:, t:t+1, :] = y
         return y_decoder
 
-    def predict(self, x_encoder, max_length=10):  # 予測に使用
+    def predict(self, x_encoder, max_length=10):
         if self.is_gpu:
             x_encoder = x_encoder.cuda()
 
@@ -150,7 +146,7 @@ class Seq2Seq(nn.Module):
         y = torch.ones(batch_size, 1, dtype=torch.long) * \
             input_field.vocab.stoi["<sos>"]
         for t in range(0, n_time):
-            x = y  # 前の時刻の出力を入力に
+            x = y
             if self.is_gpu:
                 x = x.cuda()
             y, h = self.decoder(x, h, y_encoder)
@@ -159,17 +155,16 @@ class Seq2Seq(nn.Module):
         return y_decoder
 
 
-# ------ モデルの読み込み ------
 input_field = torch.load("input_field.pkl", pickle_module=dill)
 reply_field = torch.load("reply_field.pkl", pickle_module=dill)
 
-is_gpu = False  # GPUを使用するかどうか
+is_gpu = False
 n_h = 896
 n_vocab_inp = len(input_field.vocab.itos)
 n_vocab_rep = len(reply_field.vocab.itos)
 n_emb = 300
 n_out = n_vocab_rep
-early_stop_patience = 5  # 早期終了のタイミング（誤差の最小値が何回更新されなかったら終了か）
+early_stop_patience = 5
 num_layers = 1
 bidirectional = True
 dropout = 0.0
@@ -181,26 +176,23 @@ decoder = Decoder(n_h, n_out, n_vocab_rep, n_emb, num_layers, dropout=dropout)
 seq2seq = Seq2Seq(encoder, decoder, is_gpu=is_gpu)
 
 seq2seq.load_state_dict(torch.load(
-    "model_bot.pth", map_location=torch.device("cpu")))  # CPU対応
+    "model_bot.pth", map_location=torch.device("cpu")))
 
-# ------ 応答文の生成 ------
 j_tk = Tokenizer()
 
 
 def reply(inp_text, tokenizer, max_length=10):
-    words = [tok for tok in tokenizer.tokenize(inp_text, wakati=True)]  # 分かち書き
+    words = [tok for tok in tokenizer.tokenize(inp_text, wakati=True)]
 
-    # 入力を単語idの並びに変換
     word_ids = []
     for word in words:
         idx = input_field.vocab.stoi[word]
         word_ids.append(idx)
 
     x = torch.tensor(word_ids)
-    x = x.view(1, -1)  # バッチ対応
+    x = x.view(1, -1)
     y = seq2seq.predict(x, max_length)
 
-    # 応答文の作成
     rep_text = ""
     for j in range(y.size()[1]):
         word = reply_field.vocab.itos[y[0][j]]
@@ -208,7 +200,6 @@ def reply(inp_text, tokenizer, max_length=10):
             break
         rep_text += word
 
-    # トークンの削除
     rep_text = rep_text.replace("<sos>", "")
     rep_text = rep_text.replace("<eos>", "")
     rep_text = rep_text.replace("<pad>", "")
